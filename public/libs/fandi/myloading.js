@@ -18,13 +18,16 @@ tr.loading = function(Show) {
 };
 tr.handleResponse = function(reply,successcb,errorcb) {
   try {
-    if (reply.result === "error") { if(typeof errorcb === 'function') errorcb(reply); else swal.fire('Error',reply.message, "error"); }
+    if (reply.result === "error") {
+      if(typeof errorcb === 'function') errorcb(reply);
+      else $('body').toast({class:'error', message: reply.message, title:'Error'});
+    }
     else if (reply.result === "success") { successcb(reply); }
     else if (reply.result === "debug") { console.log(reply.data); }
   } catch (e) {
     console.log(reply);
     console.log(e);
-    swal.fire('Error',"Unknown Error. Check console log (F12) for details", "error");
+    $('body').toast({class:'error', message: "Unknown Error. Check console log (F12) for details", title:'Error'});
   }
 };
 tr.post = function(uri,oPost, successcb,errorcb) {
@@ -89,12 +92,3 @@ var showProgress = function(e) {
 //    $scope.$apply();
 //  };
 //};
-
-var Example = (function() {
-  var that = {};
-  that.show = function(text,alertClass, duration) {
-    if (alertClass === "danger") alertClass = "error";
-    $.notify(text,{autoHideDuration:duration,className:alertClass, position:"top center"});
-  };
-  return that;
-}());

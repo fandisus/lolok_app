@@ -11,7 +11,8 @@ foreach ($files as $v) include($v);
 //After getting APPNAMESPACE from engine/config/constants.php --> config.json, autoload models:
 include DIR."/engine/models/autoload.php";
 
-Debug::print_r($files);
+echo WEBHOME;
+// Debug::print_r($_SERVER);
 die;
 
 unset ($files, $v);
