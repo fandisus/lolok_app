@@ -1,0 +1,18 @@
+<files composer.json>
+  require all denied
+</files>
+
+<files composer.lock>
+  require all denied
+</files>
+
+<files app.json>
+  require all denied
+</files>
+
+Options -indexes
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule ^(.*)$ index.php?path=$1 [QSA,L]
