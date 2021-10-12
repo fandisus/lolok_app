@@ -9,5 +9,8 @@
     "mysql": {"host":"localhost", "driver":"mysql", "dbname":"test", "username":"root", "password":"", "port":3306},
     "postgresql": {"host":"localhost", "driver":"pgsql", "dbname":"postgres", "username":"postgres", "password":"postgres", "port":5432},
     "oracle": {"host":"localhost", "driver":"oracle", "dbname":"xe", "username":"SYSTEM", "password":"SYSTEM", "port":1521}
+  },
+  "middlewares": {
+    "home": { "route":"*", "except":"user/*", "middleware":"guest.php"}
   }
 }
