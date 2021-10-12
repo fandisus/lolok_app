@@ -24,7 +24,7 @@ header("HTTP/1.0 404 Not Found");
     <div id="center-container">
       <h1 id="kode">404</h1>
       <h2 id="keterangan">We apologize, the address you visited is not available yet.</h2>
-      Click this link to go <a href="/">back to home</a>
+      Click this link to go <a href="<?= WEBHOME ?>">back to home</a>
     </div>
   </body>
 </html>
