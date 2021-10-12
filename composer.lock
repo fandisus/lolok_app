@@ -62,16 +62,16 @@
         },
         {
             "name": "fandisus/lolok",
-            "version": "1.0.2",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fandisus/lolok.git",
-                "reference": "f1bfbe4bf41471a847ce345c0f593322f47627b5"
+                "reference": "bf9e310571b7424798e8a78c62be8323369a7a90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fandisus/lolok/zipball/f1bfbe4bf41471a847ce345c0f593322f47627b5",
-                "reference": "f1bfbe4bf41471a847ce345c0f593322f47627b5",
+                "url": "https://api.github.com/repos/fandisus/lolok/zipball/bf9e310571b7424798e8a78c62be8323369a7a90",
+                "reference": "bf9e310571b7424798e8a78c62be8323369a7a90",
                 "shasum": ""
             },
             "require": {
@@ -97,9 +97,9 @@
             "description": "Various wrapper functions for PHP",
             "support": {
                 "issues": "https://github.com/fandisus/lolok/issues",
-                "source": "https://github.com/fandisus/lolok/tree/1.0.2"
+                "source": "https://github.com/fandisus/lolok/tree/1.0.3"
             },
-            "time": "2021-10-10T11:11:15+00:00"
+            "time": "2021-10-10T14:31:13+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
