@@ -4,6 +4,31 @@ require 'vendor/autoload.php';
 use Fandisus\Lolok\Files;
 use Fandisus\Lolok\JSONResponse;
 
+loadStaticFiles();
+function loadStaticFiles() {
+  //Possible improvement: use fopen, fseek and fpassthru to enable partial download.
+  $config = json_decode( file_get_contents('engine/config.json') );
+  foreach ($config->publicFolders as $route) {
+    $filename = $route->path.$_GET['_path'];
+    if (file_exists($filename) && !is_dir($filename)) {
+      if (isset($route->middleware)) {
+        $middlePath = 'engine/middlewares/'.$route->middleware;
+        if (file_exists($middlePath)) include $middlePath;
+      }
+      $finfo = finfo_open(FILEINFO_MIME_TYPE);
+      $mime = finfo_file($finfo, $filename);
+      finfo_close($finfo);
+
+      header('Content-Type: '.$mime);
+      header('Content-Length: ' . filesize($filename));
+
+      readfile($filename);
+      exit;
+    }
+  }
+}
+
+
 $fileSearch = getFilename($_GET['_path']); //$_GET['path'] is from .htaccess
 function getFilename(string $path): object {
   $result = new \stdClass();
