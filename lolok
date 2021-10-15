@@ -99,11 +99,13 @@ function createPlan($planName) {
   
   $filename = date('Ymd-His')."-$planName.php";
   file_put_contents(DIR.DS.'engine'.DS.'dbplans'.DS.$filename, $template);
+  printSuccess($filename.' created');
 }
 
 $col = (DB::$driver === 'oracle') ? 'DEPLOYMENT' : 'deployment';
 //------------ db-deploy
 if ($command === 'db-deploy') {
+  $nextBatch = DB::getOneVal('SELECT COALESCE(MAX(batch),0)+1 next_batch FROM lolokdb');
   $files = Files::GetDirFiles('engine/dbplans', true);
   $dbFiles = DB::get('SELECT deployment FROM lolokdb',[]);
   $dbFiles = array_map(function($row) use ($col) { return $row->$col; }, $dbFiles);
@@ -112,7 +114,6 @@ if ($command === 'db-deploy') {
     $className = substr(substr($f->filename, 16, 999), 0, -4);
     include $f->path;
     $className::deploy();
-    $nextBatch = DB::getOneVal('SELECT COALESCE(MAX(batch),0)+1 next_batch FROM lolokdb');
     DB::insert('INSERT INTO lolokdb (deployment, batch) VALUES (:FILE, :BATCH)', ['FILE'=>$f->filename, 'BATCH'=>$nextBatch]);
     printInfo($f->path.' deployed');
   }
