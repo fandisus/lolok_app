@@ -19,6 +19,10 @@ function loadStaticFiles() {
       $mime = finfo_file($finfo, $filename);
       finfo_close($finfo);
 
+      $ext = pathinfo($filename, PATHINFO_EXTENSION);
+      if ($ext === 'js') $mime = 'application/javascript';
+      elseif ($ext === 'css') $mime = 'text/css';
+
       header('Content-Type: '.$mime);
       header('Content-Length: ' . filesize($filename));
 
