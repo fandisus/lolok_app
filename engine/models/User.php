@@ -1,6 +1,7 @@
 <?php
 namespace LolokApp;
 use Fandisus\Lolok\Model;
+use Firebase\JWT\JWT;
 
 class User extends Model {
   protected static function tableName() { return 'users'; }
@@ -11,4 +12,25 @@ class User extends Model {
   public $id, $username, $password, $email, $phone;
 
   public static function hashPassword($pass) { return hash('sha256', $pass); }
+  public function updateLoginInfo() {
+
+  }
+  public function getAcl() {
+
+  }
+  public function canAccess($menuName, $access='') {
+    if ($this->username === 'admin') return true;
+  }
+  public function login() {
+    //TODO: Might want to log login actions here.
+    $jwt = JWT::encode(
+      (object)["username"=>$this->username, "id"=>$this->id], //"email"=>$this->email  removed because might be security concern
+      JWT_SECRET
+    );
+    setcookie("lolokJWT", $jwt, 0, '','', false, true);
+  }
+  public function logout() {
+    //TODO: Might want to log logout actions here.
+    setcookie('lolokJWT', '', time()-3600);
+  }
 }

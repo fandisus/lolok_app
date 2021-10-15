@@ -11,6 +11,7 @@
     "minimum-stability": "stable",
     "require": {
         "fandisus/lolok": "^1.0",
-        "vanilla/garden-cli": "^3.1"
+        "vanilla/garden-cli": "^3.1",
+        "firebase/php-jwt": "^5.4"
     }
 }

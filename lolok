@@ -12,7 +12,11 @@ use Fandisus\Lolok\Files;
 use Fandisus\Lolok\TableComposer;
 use Garden\Cli\Cli;
 
-if (!file_exists('engine/config.json')) copy('engine/config.sample.json', 'engine/config.json');
+if (!file_exists('engine/config.json')) {
+  $content = file_get_contents('engine/config.sample.json');
+  $newContent = str_replace('REPLACE_THIS_SECRET',bin2hex(random_bytes(32)), $content);
+  file_put_contents('engine/config.json', $newContent);
+}
 $config = json_decode(file_get_contents('engine/config.json'));
 
 $files = Files::GetDirFiles('engine/config');

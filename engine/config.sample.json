@@ -4,7 +4,8 @@
     "APPNAME":"Lolok",
     "DOMAIN":"",
     "APPNAMESPACE": "LolokApp",
-    "LOGO_IMAGE":"images/dot.png"
+    "LOGO_IMAGE":"images/dot.png",
+    "JWT_SECRET":"REPLACE_THIS_SECRET"
   },
   "DBConnections": {
     "mysql": {"host":"localhost", "driver":"mysql", "dbname":"test", "username":"root", "password":"", "port":3306},
