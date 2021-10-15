@@ -1,5 +1,4 @@
 <?php
-
 use Fandisus\Lolok\DB;
 use Fandisus\Lolok\TableComposer;
 
@@ -13,6 +12,7 @@ class UsersAndAccess {
 
     $t = new TableComposer('menus');
     $t->string('name')->primary()
+      ->integer('position')->index()
       ->string('text', 100)->notNull()
       ->string('href', 200)->notNull()
       ->string('icon')->notNull()
