@@ -1,40 +1,27 @@
 <?php
-require_once 'vendor/autoload.php';
-
 //Yep this cli pretty much a duplicate of laravel or lumen.
 //But i dont like laravel because it's model forces me to query database using laravel style.
 //And this framework might also support more features later.
+//For starter, this framework serve static files from PHP. So we can put middleware for static files.
 
-function formatPrint(array $format=[],string $text = '') {
-  $codes=[
-    'bold'=>1,
-    'italic'=>3, 'underline'=>4, 'strikethrough'=>9,
-    'black'=>30, 'red'=>31, 'green'=>32, 'yellow'=>33,'blue'=>34, 'magenta'=>35, 'cyan'=>36, 'white'=>37,
-    'blackbg'=>40, 'redbg'=>41, 'greenbg'=>42, 'yellowbg'=>44,'bluebg'=>44, 'magentabg'=>45, 'cyanbg'=>46, 'lightgreybg'=>47
-  ];
-  $formatMap = array_map(function ($v) use ($codes) { return $codes[$v]; }, $format);
-  echo "\e[".implode(';',$formatMap).'m'.$text."\e[0m";
-}
-function formatPrintLn(array $format=[], string $text='') {
-  formatPrint($format, $text); echo "\r\n";
-}
-function printError($message) {
-  formatPrint(['redbg', 'white', 'bold'], 'Error');
-  formatPrintLn(['yellow', 'bold'], ' '.$message."\r\n");
-}
-function printSuccess($message) {
-  formatPrint(['greenbg', 'black'], 'Success');
-  formatPrintLn(['yellow', 'bold'], ' '.$message."\r\n");
-}
-function printInfo($message) {
-  formatPrint(['cyanbg', 'black'], 'Info');
-  formatPrintLn(['white', 'bold'], ' '.$message);
-}
+require_once 'engine/cli/printFunctions.php';
+require_once 'vendor/autoload.php';
 
 use Fandisus\Lolok\DB;
 use Fandisus\Lolok\Files;
 use Fandisus\Lolok\TableComposer;
 use Garden\Cli\Cli;
+
+if (!file_exists('engine/config.json')) copy('engine/config.sample.json', 'engine/config.json');
+$config = json_decode(file_get_contents('engine/config.json'));
+
+$files = Files::GetDirFiles('engine/config');
+foreach ($files as $v) include($v);
+
+//After getting APPNAMESPACE from engine/config/constants.php --> config.json, autoload models:
+include "engine/models/autoload.php";
+
+
 $cli = Cli::create()
   ->command('db-init')
   ->description('Create lolokdb table for db operation log.')
@@ -53,16 +40,21 @@ $cli = Cli::create()
   ->command('db-undeploy')
   ->description('Undeploy database plan files.')
   //----------
+  ->command('dbseed-create')
+  ->description('Create db seed file.')
+  ->arg('name', 'The db seed name(s)', true)
+  //----------
+  ->command('dbseed-run')
+  ->description('Run db seed file.')
+  ->opt('all:a', 'Run all db seed files', false, 'boolean')
+  ->arg('name', 'The db seed name(s)', false)
+  //----------
   ->command('*')
   ->opt('connection:c', 'The database connection name in config.json. If not specified, will use first connection.', false, 'string')
   ;
 $garden = $cli->parse($argv);
 
-$files = Files::GetDirFiles(__DIR__.'/engine/config');
-foreach ($files as $v) include($v);
-
 //Get database connection
-$config = json_decode(file_get_contents(DIR.'/engine/config.json'));
 $arrDb = (array) $config->DBConnections;
 $conn = $garden->getOpt('connection');
 @$dbConfig = ($conn === null) ? array_shift($arrDb) : $config->DBConnections->$conn;
@@ -133,6 +125,33 @@ if ($command === 'db-undeploy') {
   DB::exec('DELETE FROM lolokdb WHERE batch=:BATCH', ['BATCH'=>$prevBatch]);
   printSuccess('Undeploy finished');
 }
+
+//------------ dbseed-create
+if ($command === 'dbseed-create') foreach ($args as $seed) createSeed($seed);
+function createSeed($seedName) {
+  $seedName = str_replace(' ', '_', ucfirst($seedName)); //If name uses spaces, just replace with underscore
+  preg_match('/[\W]+/', $seedName, $matches);
+  if (count($matches)) { printError("Invalid seed name: $seedName"); die; }
+
+  $template = file_get_contents(DIR.'/engine/cli/seedTemplate.php');
+  $template = str_replace('SEED_TEMPLATE', $seedName, $template);
+  
+  $filename = "$seedName.seed.php";
+  file_put_contents(DIR.DS.'engine'.DS.'dbseed'.DS.$filename, $template);
+  printSuccess($filename.' created');
+}
+
+if ($command === 'dbseed-run') {
+  $files = Files::GetDirFiles('engine/dbseed', true);
+  foreach ($files as $f) {
+    $className = substr($f->filename, 0, -9);
+    include $f->path;
+    $className::run();
+    printInfo($f->path.' finished running.');
+  }
+  printSuccess('Seed run finished');
+}
+
 
 
 ?>
