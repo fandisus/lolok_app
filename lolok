@@ -1,0 +1,137 @@
+<?php
+require_once 'vendor/autoload.php';
+
+//Yep this cli pretty much a duplicate of laravel or lumen.
+//But i dont like laravel because it's model forces me to query database using laravel style.
+//And this framework might also support more features later.
+
+function formatPrint(array $format=[],string $text = '') {
+  $codes=[
+    'bold'=>1,
+    'italic'=>3, 'underline'=>4, 'strikethrough'=>9,
+    'black'=>30, 'red'=>31, 'green'=>32, 'yellow'=>33,'blue'=>34, 'magenta'=>35, 'cyan'=>36, 'white'=>37,
+    'blackbg'=>40, 'redbg'=>41, 'greenbg'=>42, 'yellowbg'=>44,'bluebg'=>44, 'magentabg'=>45, 'cyanbg'=>46, 'lightgreybg'=>47
+  ];
+  $formatMap = array_map(function ($v) use ($codes) { return $codes[$v]; }, $format);
+  echo "\e[".implode(';',$formatMap).'m'.$text."\e[0m";
+}
+function formatPrintLn(array $format=[], string $text='') {
+  formatPrint($format, $text); echo "\r\n";
+}
+function printError($message) {
+  formatPrint(['redbg', 'white', 'bold'], 'Error');
+  formatPrintLn(['yellow', 'bold'], ' '.$message."\r\n");
+}
+function printSuccess($message) {
+  formatPrint(['greenbg', 'black'], 'Success');
+  formatPrintLn(['yellow', 'bold'], ' '.$message."\r\n");
+}
+function printInfo($message) {
+  formatPrint(['cyanbg', 'black'], 'Info');
+  formatPrintLn(['white', 'bold'], ' '.$message);
+}
+
+use Fandisus\Lolok\DB;
+use Fandisus\Lolok\Files;
+use Fandisus\Lolok\TableComposer;
+use Garden\Cli\Cli;
+$cli = Cli::create()
+  ->command('db-init')
+  ->description('Create lolokdb table for db operation log.')
+  ->opt('force:f', 'Recreate lolokdb table', false, 'boolean')
+  //----------
+  ->command('db-plan')
+  ->description('Create database plan file.')
+  ->arg('name', 'The database plan name', true)
+  //----------
+  ->command('db-review-plans')
+  ->description('Show deployed and undeployed plans.')
+  //----------
+  ->command('db-deploy')
+  ->description('Deploy database plan files.')
+  //----------
+  ->command('db-undeploy')
+  ->description('Undeploy database plan files.')
+  //----------
+  ->command('*')
+  ->opt('connection:c', 'The database connection name in config.json. If not specified, will use first connection.', false, 'string')
+  ;
+$garden = $cli->parse($argv);
+
+$files = Files::GetDirFiles(__DIR__.'/engine/config');
+foreach ($files as $v) include($v);
+
+//Get database connection
+$config = json_decode(file_get_contents(DIR.'/engine/config.json'));
+$arrDb = (array) $config->DBConnections;
+$conn = $garden->getOpt('connection');
+@$dbConfig = ($conn === null) ? array_shift($arrDb) : $config->DBConnections->$conn;
+if ($dbConfig === null) { printError('Failed to get database connection config'); die; }
+else {
+  DB::setConnectionWithObject($dbConfig);
+  try { DB::init(); } catch (\Exception $ex) {
+    printError('Failed to connect to database');
+    echo $ex->getMessage(); die;
+  }
+}
+
+$args = $garden->getArgs();
+$command = $garden->getCommand();
+//------------ db-init
+if ($command === 'db-init') {
+  if (DB::tableExists('lolokdb')) { printError('Lolokdb already initialized'); }
+  $t = new TableComposer('lolokdb');
+  $t->increments('id')->primary()
+    ->string('deployment', 100)
+    ->integer('batch')->index();
+  foreach ($t->parse() as $sql) DB::exec($sql,[]);
+}
+
+//------------ db-plan
+if ($command === 'db-plan') foreach ($args as $plan) createPlan($plan);
+function createPlan($planName) {
+  $planName = str_replace(' ', '_', ucfirst($planName)); //If name uses spaces, just replace with underscore
+  preg_match('/[\W]+/', $planName, $matches);
+  if (count($matches)) { printError("Invalid plan name: $planName"); die; }
+
+  $template = file_get_contents(DIR.'/engine/cli/planTemplate.php');
+  $template = str_replace('PLAN_NAME', $planName, $template);
+  
+  $filename = date('Ymd-His')."-$planName.php";
+  file_put_contents(DIR.DS.'engine'.DS.'dbplans'.DS.$filename, $template);
+}
+
+$col = (DB::$driver === 'oracle') ? 'DEPLOYMENT' : 'deployment';
+//------------ db-deploy
+if ($command === 'db-deploy') {
+  $files = Files::GetDirFiles('engine/dbplans', true);
+  $dbFiles = DB::get('SELECT deployment FROM lolokdb',[]);
+  $dbFiles = array_map(function($row) use ($col) { return $row->$col; }, $dbFiles);
+  foreach ($files as $f) {
+    if (in_array($f->filename, $dbFiles)) continue;
+    $className = substr(substr($f->filename, 16, 999), 0, -4);
+    include $f->path;
+    $className::deploy();
+    $nextBatch = DB::getOneVal('SELECT COALESCE(MAX(batch),0)+1 next_batch FROM lolokdb');
+    DB::insert('INSERT INTO lolokdb (deployment, batch) VALUES (:FILE, :BATCH)', ['FILE'=>$f->filename, 'BATCH'=>$nextBatch]);
+    printInfo($f->path.' deployed');
+  }
+  printSuccess('Deploy finished');
+}
+
+//------------ db-undeploy
+if ($command === 'db-undeploy') {
+  $prevBatch = DB::getOneVal('SELECT COALESCE(MAX(batch),0) prev_batch FROM lolokdb');
+  $files = DB::get('SELECT deployment FROM lolokdb WHERE batch=:BATCH ORDER BY id DESC',['BATCH'=>$prevBatch]);
+  foreach ($files as $f) {
+    $className = substr(substr($f->$col, 16, 999), 0, -4);
+    include 'engine/dbplans/'.$f->$col;
+    $className::undeploy();
+    printInfo($f->$col.' undeployed');
+  }
+  DB::exec('DELETE FROM lolokdb WHERE batch=:BATCH', ['BATCH'=>$prevBatch]);
+  printSuccess('Undeploy finished');
+}
+
+
+?>

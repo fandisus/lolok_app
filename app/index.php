@@ -15,7 +15,8 @@ function mainContent() { ?>
     <p>This framework use PHP, Fandisus\Lolok package, Vue JS, Fomantic UI</p>
     <ul>
         <li>PHP</li>
-        <li>Fandisus\Lolok composer package</li>
+        <li>Fandisus/Lolok composer package for DB and model purpose</li>
+        <li>vanilla/garden-cli composer package for lolok cli</li>
         <li>Vue JS</li>
         <li>Fomantic UI + jQuery</li>
         <li>Momentjs</li>
