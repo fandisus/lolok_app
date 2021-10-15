@@ -6,6 +6,7 @@ use Fandisus\Lolok\JSONResponse;
 
 loadStaticFiles();
 function loadStaticFiles() {
+  if (!file_exists('engine/config.json')) copy('engine/config.sample.json', 'engine/config.json');
   //Possible improvement: use fopen, fseek and fpassthru to enable partial download.
   $config = json_decode( file_get_contents('engine/config.json') );
   foreach ($config->publicFolders as $route) {
