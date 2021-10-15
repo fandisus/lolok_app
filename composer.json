@@ -1,5 +1,16 @@
 {
+    "name": "fandisus/lolok_app",
+    "type": "project",
+    "license": "unlicense",
+    "authors": [
+        {
+            "name": "fandis",
+            "email": "great_beluluk@yahoo.com"
+        }
+    ],
+    "minimum-stability": "stable",
     "require": {
-        "fandisus/lolok": "^1.0"
+        "fandisus/lolok": "^1.0",
+        "vanilla/garden-cli": "^3.1"
     }
 }
