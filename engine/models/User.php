@@ -33,8 +33,10 @@ class User extends Model {
   }
   public function logout() {
     //TODO: Might want to log logout actions here.
-    $this->jwt = '';
-    $this->update();
+    if ($this->jwt != '') {
+      $this->jwt = '';
+      $this->update();
+    }
     setcookie(JWT_NAME, '', time()-3600);
   }
 }
