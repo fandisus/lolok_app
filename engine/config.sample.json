@@ -17,5 +17,8 @@
     "all": { "route":"*", "middleware":"all.php"},
     "guest": { "route":"*", "except":"user/*", "middleware":"guest.php"},
     "user": { "route":"user/*", "middleware":"user.php"}
+  },
+  "publicFolders": {
+    "public": { "path":"public/", "middleware":"public.php" }
   }
 }
