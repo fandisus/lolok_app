@@ -9,7 +9,7 @@ export default {
       tr.post(uri, {username:this.username, password:this.password}, rep=>{
         $('body').toast({
           title:'Login success', message:'Login successful. You will be directed to member\'s page', class:'success',
-          showProgress:'bottom', onHide:()=>{ window.location=WEBHOME+'user'; }
+          showProgress:'bottom', onHide:()=>{ window.location=WEBHOME+'user/'; }
         });
       });
     }

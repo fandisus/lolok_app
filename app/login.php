@@ -1,5 +1,5 @@
 <?php
-if (isset($GLOBALS['login'])) header('location:'.WEBHOME.'user');
+if (isset($GLOBALS['login'])) header('location:'.WEBHOME.'user/');
 
 include DIR . '/engine/templates/topmenu_layout.php';
 
