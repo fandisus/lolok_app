@@ -14,6 +14,8 @@
     "oracle": {"host":"localhost", "driver":"oracle", "dbname":"xe", "username":"SYSTEM", "password":"SYSTEM", "port":1521}
   },
   "middlewares": {
-    "home": { "route":"*", "except":"user/*", "middleware":"guest.php"}
+    "all": { "route":"*", "middleware":"all.php"},
+    "guest": { "route":"*", "except":"user/*", "middleware":"guest.php"},
+    "user": { "route":"user/*", "middleware":"user.php"}
   }
 }

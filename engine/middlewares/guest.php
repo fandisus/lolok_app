@@ -1,9 +1,6 @@
 <?php
 namespace Fandisus\Lolok;
 
-use Firebase\JWT\JWT;
-use LolokApp\User;
-
 class TopMenu {
   public $showLogo = true; //bool
   public $barColor = 'blue'; //string
@@ -29,15 +26,5 @@ $_topMenu = new TopMenu(false, 'blue', [
   new MenuItem('/about', 'About')
 ]);
 $_topMenu->leftLogo = WEBHOME.LOGO_IMAGE;
-
-if (isset($_COOKIE[JWT_NAME])) {
-  try { $oUser = JWT::decode($_COOKIE[JWT_NAME], JWT_SECRET, ['HS256']); }
-  catch (\Exception $ex) { setcookie(JWT_NAME, '', time()-3600); }
-
-  $dbUser = User::find(['id'=>$oUser->id]);
-  if ($dbUser === null) { setcookie(JWT_NAME, '', time()-3600); }
-  elseif ($dbUser->jwt !== $_COOKIE[JWT_NAME]) $dbUser->logout();
-  else $GLOBALS['login'] = $dbUser;
-}
 
 ?>
