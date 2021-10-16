@@ -5,4 +5,5 @@ define('APPNAMESPACE', '');
 define('DOMAIN','');
 define('DEBUG', '');
 define('LOGO_IMAGE','');
+define('JWT_NAME', '');
 define('JWT_SECRET','');

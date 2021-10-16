@@ -5,6 +5,7 @@
     "DOMAIN":"",
     "APPNAMESPACE": "LolokApp",
     "LOGO_IMAGE":"images/dot.png",
+    "JWT_NAME":"LolokJWT",
     "JWT_SECRET":"REPLACE_THIS_SECRET"
   },
   "DBConnections": {

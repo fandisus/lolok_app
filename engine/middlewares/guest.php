@@ -30,12 +30,13 @@ $_topMenu = new TopMenu(false, 'blue', [
 ]);
 $_topMenu->leftLogo = WEBHOME.LOGO_IMAGE;
 
-if (isset($_COOKIE['lolokJWT'])) {
-  try { $oUser = JWT::decode($_COOKIE['lolokJWT'], JWT_SECRET, ['HS256']); }
-  catch (\Exception $ex) { setcookie('lolokJWT', '', time()-3600); }
+if (isset($_COOKIE[JWT_NAME])) {
+  try { $oUser = JWT::decode($_COOKIE[JWT_NAME], JWT_SECRET, ['HS256']); }
+  catch (\Exception $ex) { setcookie(JWT_NAME, '', time()-3600); }
 
   $dbUser = User::find(['id'=>$oUser->id]);
-  if ($dbUser === null) { setcookie('lolokJWT', '', time()-3600); }
+  if ($dbUser === null) { setcookie(JWT_NAME, '', time()-3600); }
+  elseif ($dbUser->jwt !== $_COOKIE[JWT_NAME]) $dbUser->logout();
   else $GLOBALS['login'] = $dbUser;
 }
 

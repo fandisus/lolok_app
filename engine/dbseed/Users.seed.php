@@ -7,8 +7,8 @@ class Users {
     // DB::insert('INSERT INTO xyz VALUES (1,2,3)',[]);
 
     $users = [
-      (object)['id'=>1, 'username'=>'admin', 'password'=>User::hashPassword('admin'), 'email'=>'admin@admina.com', 'phone'=>'123123'],
-      (object)['id'=>2, 'username'=>'fandi', 'password'=>User::hashPassword('fandi'), 'email'=>'fandi@admina.com', 'phone'=>'123123'],
+      (object)['id'=>1, 'username'=>'admin', 'password'=>User::hashPassword('admin'), 'email'=>'admin@admina.com', 'phone'=>'123123', 'jwt'=>''],
+      (object)['id'=>2, 'username'=>'fandi', 'password'=>User::hashPassword('fandi'), 'email'=>'fandi@admina.com', 'phone'=>'123123', 'jwt'=>''],
     ];
     User::multiInsert($users);
 

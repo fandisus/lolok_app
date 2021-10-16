@@ -37,7 +37,8 @@ class UsersAndAccess {
       ->string('username')->unique()
       ->string('password',100)
       ->string('email')->unique()
-      ->string('phone')->index();
+      ->string('phone')->index()
+      ->string('jwt', 200);
     $userTable = $t->parse();
 
     $t = new TableComposer('user_accesses');
