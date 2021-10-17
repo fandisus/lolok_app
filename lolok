@@ -12,21 +12,10 @@ use Fandisus\Lolok\Files;
 use Fandisus\Lolok\TableComposer;
 use Garden\Cli\Cli;
 
-if (!file_exists('engine/config.json')) {
-  $content = file_get_contents('engine/config.sample.json');
-  $newContent = str_replace('REPLACE_THIS_SECRET',bin2hex(random_bytes(32)), $content);
-  file_put_contents('engine/config.json', $newContent);
-}
-$config = json_decode(file_get_contents('engine/config.json'));
-
-$files = Files::GetDirFiles('engine/config');
-foreach ($files as $v) include($v);
-
-//After getting APPNAMESPACE from engine/config/constants.php --> config.json, autoload models:
-include "engine/models/autoload.php";
-
-
 $cli = Cli::create()
+  ->command('create-config')
+  ->description('Create engine/config.json file from config.sample.json')
+  //---------
   ->command('db-init')
   ->description('Create lolokdb table for db operation log.')
   ->opt('force:f', 'Recreate lolokdb table', false, 'boolean')
@@ -58,6 +47,26 @@ $cli = Cli::create()
   ;
 $garden = $cli->parse($argv);
 
+//------------ create-config
+if ($garden->getCommand() === 'create-config') {
+  if (!file_exists('engine/config.json')) {
+    $content = file_get_contents('engine/config.sample.json');
+    $newContent = str_replace('REPLACE_THIS_SECRET',bin2hex(random_bytes(32)), $content);
+    file_put_contents('engine/config.json', $newContent);
+  }
+  exit;
+}
+
+//------- Initialize engine
+$config = json_decode(file_get_contents('engine/config.json'));
+
+$files = Files::GetDirFiles('engine/config');
+foreach ($files as $v) include($v);
+
+//After getting APPNAMESPACE from engine/config/constants.php --> config.json, autoload models:
+include "engine/models/autoload.php";
+//------- END Initialize engine
+
 //Get database connection
 $arrDb = (array) $config->DBConnections;
 $conn = $garden->getOpt('connection');
@@ -73,6 +82,8 @@ else {
 
 $args = $garden->getArgs();
 $command = $garden->getCommand();
+
+
 //------------ db-init
 if ($command === 'db-init') {
   if (DB::tableExists('lolokdb')) { printError('Lolokdb already initialized'); }
