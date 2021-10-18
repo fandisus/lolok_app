@@ -60,10 +60,10 @@ if ($garden->getCommand() === 'create-config') {
 //------- Initialize engine
 $config = json_decode(file_get_contents('engine/config.json'));
 
-$files = Files::GetDirFiles('engine/config');
+$files = Files::GetDirFiles('engine/_preload');
 foreach ($files as $v) include($v);
 
-//After getting APPNAMESPACE from engine/config/constants.php --> config.json, autoload models:
+//After getting APPNAMESPACE from engine/_preload/constants.php --> config.json, autoload models:
 include "engine/models/autoload.php";
 //------- END Initialize engine
 

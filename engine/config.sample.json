@@ -14,11 +14,11 @@
     "oracle": {"host":"localhost", "driver":"oracle", "dbname":"xe", "username":"SYSTEM", "password":"SYSTEM", "port":1521}
   },
   "middlewares": {
-    "all": { "route":"*", "middleware":"all.php"},
-    "guest": { "route":"*", "except":"user/*", "middleware":"guest.php"},
-    "user": { "route":"user/*", "middleware":"user.php"}
+    "all": { "route":"*", "middleware":"allMiddleware.php"},
+    "guest": { "route":"*", "except":"user/*", "middleware":"guestMiddleware.php"},
+    "user": { "route":"user/*", "middleware":"userMiddleware.php"}
   },
   "publicFolders": {
-    "public": { "path":"public/", "middleware":"public.php" }
+    "public": { "path":"public/", "middleware":"publicMiddleware.php" }
   }
 }
