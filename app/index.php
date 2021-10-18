@@ -2,9 +2,6 @@
 //$_topMenu = '';
 include DIR.'/engine/templates/topmenu_layout.php';
 
-use Fandisus\Lolok\DB;
-use Fandisus\Lolok\Debug;
-
 function htmlHead() {}
 function bodyEnd() {}
 function mainContent() { ?>
