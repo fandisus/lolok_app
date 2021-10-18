@@ -1,6 +1,23 @@
 <?php
 //- Only appear for laptop and tablets (larger screen)
 @render($_topMenu);
+
+function renderFomanticMenuItem($menuItem, $level=0) {
+  if (count($menuItem->subMenus) === 0) {
+    ?><a class="item" href="<?= WEBHOME.$menuItem->href ?>"><?= $menuItem->text ?></a><?php
+  } else {
+    $class = ($level > 0) ? "item" : "ui dropdown item"
+    ?>
+    <div class="<?= $class ?>" level="<?=$level?>">
+      <?= $menuItem->text ?>
+      <i class="dropdown icon"></i>
+      <div class="menu">
+        <?php foreach ($menuItem->subMenus as $sub) renderFomanticMenuItem($sub, ++$level); ?>
+      </div>
+    </div><?php
+  }
+}
+
 function render($topMenu) {
   //- topMenu: { showLogo:, leftLogo:, rightLogo:, barColor:, menus:[]}
   //- barcolor is semantic-ui color class
@@ -33,20 +50,7 @@ function render($topMenu) {
           <div class="ui container">
             <div class="ui inverted menu <?= $topMenu->barColor ?>">
               <a class="item" href="<?= WEBHOME ?>"><i class="home icon"></i></a>
-              <?php foreach ($topMenu->menus as $menu) { ?>
-                <?php if ($menu->href !== '') { ?>
-                  <a class="item" href="<?= $menu->href ?>"><?= $menu->text ?></a> 
-                <?php } else { ?>
-                  <div class="ui dropdown item">
-                    <?= $menu->text ?><i class="dropdown icon"></i>
-                    <div class="menu">
-                      <?php foreach($menu->content as $submenu) { ?>
-                        <a class="item" href="<?= $submenu->href?>"><?= $submenu->text ?></a>
-                      <?php } ?>
-                    </div>
-                  </div>
-                <?php } ?>
-              <?php } ?>
+              <?php foreach ($topMenu->menus as $menu) renderFomanticMenuItem($menu); ?>
               <a class="right item" href="<?=WEBHOME.'login'?>">Login</a>
             </div>
           </div>
