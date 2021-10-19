@@ -1,6 +1,6 @@
 <?php
-use Fandisus\Lolok\DB;
 use LolokApp\User;
+use LolokApp\UserAccess;
 
 class Users {
   public static function run() {
@@ -11,6 +11,11 @@ class Users {
       (object)['id'=>2, 'username'=>'fandi', 'password'=>User::hashPassword('fandi'), 'email'=>'fandi@admina.com', 'phone'=>'123123', 'jwt'=>''],
     ];
     User::multiInsert($users);
+
+    UserAccess::multiInsert([
+      (object) ['uid'=>1, 'profile'=>'all'],
+      (object) ['uid'=>2, 'profile'=>'all']
+    ]);
 
     // $users = [
     //   ['id'=>1, 'username'=>'admin', 'password'=>User::hashPassword('admin'), 'email'=>'admin@admina.com', 'phone'=>'123123'],
