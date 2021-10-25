@@ -1,4 +1,6 @@
 <?php
+
+use LolokApp\AccessProfile;
 use LolokApp\User;
 use LolokApp\UserAccess;
 
@@ -12,10 +14,17 @@ class Users {
     ];
     User::multiInsert($users);
 
-    UserAccess::multiInsert([
-      (object) ['uid'=>1, 'profile'=>'all'],
-      (object) ['uid'=>2, 'profile'=>'all']
+    $ap = new AccessProfile([
+      'name'=>'All',
+      'menu_tree'=>AccessProfile::availableMenus()
     ]);
+    $ap->insert();
+
+    $ua = new UserAccess([
+      'uid'=> 2,
+      'profile'=>'All'
+    ]);
+    $ua->insert();
 
     // $users = [
     //   ['id'=>1, 'username'=>'admin', 'password'=>User::hashPassword('admin'), 'email'=>'admin@admina.com', 'phone'=>'123123'],

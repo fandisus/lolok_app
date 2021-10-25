@@ -18,12 +18,18 @@ class UsersAndAccess {
       ->string('jwt', 200);
     $userTable = $t->parse();
 
+    $t = new TableComposer('access_profile');
+    $t->string('name', 50)->primary()
+      ->text('menu_tree');
+    //Future can add regions, areas, departments etc.
+    $accessProfileTable = $t->parse();
+
     $t = new TableComposer('user_accesses');
     $t->integer('uid')->foreign('users','id','cascade','cascade')
-      ->string('profile');
+      ->string('profile')->foreign('access_profile', 'name', 'cascade','cascade');
     $userAccessTable = $t->parse();
 
-    return array_merge( $settingTable, $userTable, $userAccessTable );
+    return array_merge( $settingTable, $userTable, $accessProfileTable, $userAccessTable );
   }
   public static function deploy() {
     foreach (self::deploySQLs() as $sql) DB::exec($sql,[]);
@@ -32,6 +38,7 @@ class UsersAndAccess {
     //Not yet implemented
     return [
       'DROP TABLE IF EXISTS user_accesses',
+      'DROP TABLE IF EXISTS access_profile',
       'DROP TABLE IF EXISTS users',
       'DROP TABLE IF EXISTS settings'
     ];

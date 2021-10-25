@@ -62,16 +62,16 @@
         },
         {
             "name": "fandisus/lolok",
-            "version": "1.0.5",
+            "version": "1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fandisus/lolok.git",
-                "reference": "21615e7e83ab4ab650ff251cb146218db4d88b66"
+                "reference": "b4b87438bec5c72db47731447a2059f219a0d14e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fandisus/lolok/zipball/21615e7e83ab4ab650ff251cb146218db4d88b66",
-                "reference": "21615e7e83ab4ab650ff251cb146218db4d88b66",
+                "url": "https://api.github.com/repos/fandisus/lolok/zipball/b4b87438bec5c72db47731447a2059f219a0d14e",
+                "reference": "b4b87438bec5c72db47731447a2059f219a0d14e",
                 "shasum": ""
             },
             "require": {
@@ -97,9 +97,9 @@
             "description": "Various wrapper functions for PHP",
             "support": {
                 "issues": "https://github.com/fandisus/lolok/issues",
-                "source": "https://github.com/fandisus/lolok/tree/1.0.5"
+                "source": "https://github.com/fandisus/lolok/tree/1.0.7"
             },
-            "time": "2021-10-15T09:54:19+00:00"
+            "time": "2021-10-27T07:24:36+00:00"
         },
         {
             "name": "firebase/php-jwt",

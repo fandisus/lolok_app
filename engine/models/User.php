@@ -1,8 +1,7 @@
 <?php
 namespace LolokApp;
 
-use Fandisus\Lolok\DB;
-use Fandisus\Lolok\MenuAccess;
+use Fandisus\Lolok\Debug;
 use Fandisus\Lolok\Model;
 use Firebase\JWT\JWT;
 
@@ -13,27 +12,35 @@ class User extends Model {
   protected static function jsonColumns() { return []; }
 
   public $id, $username, $password, $email, $phone, $jwt;
-  private $_menuAccess;
+  private $_accessProfile;
 
   public static function hashPassword($pass) { return hash('sha256', $pass); }
 
   private function loadAccess() {
-    if ($this->_menuAccess !== null) return;
-    return $this->_menuAccess = UserAccess::find(['uid'=>$this->id]);
+    if ($this->_accessProfile !== null) return $this->_accessProfile;
+    $userAccess = UserAccess::find(['uid'=>$this->id]);
+    $this->_accessProfile = AccessProfile::find(['name'=>$userAccess->profile]);
+    return $this->_accessProfile;
   }
   public function getMenuTree() {
     if (!$this->loadAccess()) return null;
-    return $this->_menuAccess->getMenuTree();
+    return $this->_accessProfile->menu_tree;
+  }
+  public function getRights() {
+    if (!$this->loadAccess()) return null;
+    return $this->_accessProfile->getRights();
   }
   public function canAccess($href, $access='') {
     if ($this->username === 'admin') return true;
 
     $this->loadAccess();
+    $ap = $this->_accessProfile;
     //Check href in accesses
-    $filter = array_filter($this->_menuAccess->accesses, function($a) use ($href) { return $a->href === $href; });
+    $filter = array_filter($ap->getRights(), function($a) use ($href) { return $a->href === $href; });
     if (count($filter) < 1) return false;
     //Check rights in access
-    if (!isset($filter[0]->rights) || !in_array($access, $filter[0]->rights)) return false;
+    $menuItem = array_pop($filter);
+    if (!isset($menuItem->rights) || !in_array($access, $menuItem->rights)) return false;
     return true;
   }
   public function login() {
