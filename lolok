@@ -157,14 +157,29 @@ function createSeed($seedName) {
 }
 
 if ($command === 'dbseed-run') {
-  $files = Files::GetDirFiles('engine/dbseed', true);
-  foreach ($files as $f) {
-    $className = substr($f->filename, 0, -9);
-    include $f->path;
-    $className::run();
-    printInfo($f->path.' finished running.');
+  $runSomething = false;
+  $runAll = $garden->getOpt('all');
+  if ($runAll) {
+    $files = Files::GetDirFiles('engine/dbseed', true);
+    foreach ($files as $f) {
+      $className = substr($f->filename, 0, -9);
+      include $f->path;
+      $className::run();
+      printInfo($f->path.' finished running.');
+      $runSomething = true;
+    }
+  } else {
+    $args = $garden->getArgs();
+    foreach($args as $seed) {
+      $filename = DIR.DS.'engine'.DS.'dbseed'.DS.$seed.'.seed.php';
+      include $filename;
+      $seed::run();
+      printInfo($filename. ' finished running.');
+      $runSomething = true;
+    }
   }
-  printSuccess('Seed run finished');
+  if ($runSomething) printSuccess('Seed run finished');
+  else printInfo('Nothing to run');
 }
 
 
