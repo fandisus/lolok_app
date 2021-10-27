@@ -6,13 +6,6 @@ include DIR.'/engine/templates/sidebar_layout.php';
 function htmlHead() {?>
 <script src="<?=WEBHOME?>libs/fomantic-2.8/tablesort.js"></script>
 <style>
-  #app { padding: 15px; }
-  .ui.table { white-space: nowrap; }
-  .ui.table td { padding: 0.10em; }
-  #modUser .ui.form .inline.field label:first-child { width: 120px; }
-  #modCPass .ui.form .inline.field label:first-child { width: 120px; }
-  .islink { cursor: pointer; }
-  .bold { font-weight: bolder;}
   .tree {
     height: 50vh; border:1px solid lightgrey; box-shadow: 1px 1px 2px 1px lightgrey;
     overflow: auto; padding: 10px;

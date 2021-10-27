@@ -1,0 +1,5 @@
+#app { padding: 15px; }
+.ui.table { white-space: nowrap; }
+.ui.table td { padding: 0.10em; }
+.islink { cursor: pointer; }
+.bold { font-weight: bolder;}
