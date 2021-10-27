@@ -1,6 +1,5 @@
 <?php
-
-use Fandisus\Lolok\Debug;
+if (!$login->canAccess(APP_PATH, 'read')) header('location:'.WEBHOME.'user/403');
 
 include DIR.'/engine/templates/sidebar_layout.php';
 

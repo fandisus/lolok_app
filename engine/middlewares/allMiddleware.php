@@ -9,5 +9,5 @@ if (isset($_COOKIE[JWT_NAME])) {
   $dbUser = User::find(['id'=>$oUser->id]);
   if ($dbUser === null) { setcookie(JWT_NAME, '', time()-3600); }
   elseif ($dbUser->jwt !== $_COOKIE[JWT_NAME]) $dbUser->logout();
-  else $GLOBALS['login'] = $dbUser;
+  else $login = $dbUser;
 }

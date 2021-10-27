@@ -7,11 +7,13 @@ if (!function_exists($_POST['a'])) JSONResponse::Error("Service {$_POST['a']} no
 else $_POST['a']();
 
 function getData() {
+  if (!$GLOBALS['login']->canAccess(APP_PATH, 'read')) JSONResponse::Error('Access denied');
   $result = AccessProfile::all();
   JSONResponse::Success(['profiles'=>$result]);
 }
 
 function init() {
+  if (!$GLOBALS['login']->canAccess(APP_PATH, 'read')) JSONResponse::Error('Access denied');
   $availableMenus = AccessProfile::availableMenus();
   JSONResponse::Success(['availableMenus'=>$availableMenus]);
 }
@@ -22,9 +24,11 @@ function save() {
   // if (count($obj->menu_tree) === 0) JSONResponse::Error('No menu access');
   try {
     if ($obj->pk === '') { //new
+      if (!$GLOBALS['login']->canAccess(APP_PATH, 'create')) JSONResponse::Error('Access denied');
       $accesProfile = new AccessProfile($obj);
       $accesProfile->insert();
     } else { //update
+      if (!$GLOBALS['login']->canAccess(APP_PATH, 'update')) JSONResponse::Error('Access denied');
       $accessProfile = AccessProfile::find(['name'=>$obj->pk]);
       if ($accessProfile === null) JSONResponse::Error('Profile not found');
       // JSONResponse::Debug(print_r($accessProfile, true));
@@ -39,6 +43,7 @@ function save() {
 }
 
 function remove() {
+  if (!$GLOBALS['login']->canAccess(APP_PATH, 'delete')) JSONResponse::Error('Access denied');
   $name = $_POST['name'];
   $accessProfile = AccessProfile::find(['name'=>$name]);
   if ($accessProfile === null) JSONResponse::Error('Profile not found');
