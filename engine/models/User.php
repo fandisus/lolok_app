@@ -11,7 +11,7 @@ class User extends Model {
   protected static function hasSerial() { return true; }
   protected static function jsonColumns() { return []; }
 
-  public $id, $username, $password, $email, $phone, $jwt;
+  public $id, $username, $password, $fullname, $email, $phone, $jwt;
   private $_accessProfile;
 
   public static function hashPassword($pass) { return hash('sha256', $pass); }

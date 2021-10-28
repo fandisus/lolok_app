@@ -13,6 +13,7 @@ class UsersAndAccess {
     $t->increments('id')->primary()
       ->string('username')->unique()
       ->string('password',100)
+      ->string('fullname',100)->index()
       ->string('email')->unique()
       ->string('phone')->index()
       ->string('jwt', 200);
