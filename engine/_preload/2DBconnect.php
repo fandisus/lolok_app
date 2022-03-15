@@ -11,9 +11,9 @@ $arrDb = (array) $config->DBConnections;
 @$dbConfig = array_shift($arrDb);
 if ($dbConfig === null) { echo 'Failed to get database connection config'; die; }
 else {
-  DB::setConnectionWithObject($dbConfig);
-  try { DB::init(); } catch (\Exception $ex) {
+  try { DB::setConnectionWithObject($dbConfig); } catch (\Exception $ex) {
     echo 'Failed to connect to database<br />';
+    if (DEBUG) echo 'Please check engine/config.json.<br />';
     echo $ex->getMessage(); die;
   }
 }
