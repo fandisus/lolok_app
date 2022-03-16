@@ -1,7 +1,8 @@
 <?php
 define("DIR", dirname(dirname(__DIR__)));
 define("DS", DIRECTORY_SEPARATOR);
-define("WEBHOME",dirname($_SERVER['SCRIPT_NAME']).'/');
+$webhome = ($_SERVER['SCRIPT_NAME'] === '/index.php') ? '/' : dirname($_SERVER['SCRIPT_NAME']).'/';
+define("WEBHOME",$webhome);
 
 loadConstants();
 function loadConstants() {
