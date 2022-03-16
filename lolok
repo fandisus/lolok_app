@@ -73,9 +73,9 @@ $conn = $garden->getOpt('connection');
 @$dbConfig = ($conn === null) ? array_shift($arrDb) : $config->DBConnections->$conn;
 if ($dbConfig === null) { printError('Failed to get database connection config'); die; }
 else {
-  DB::setConnectionWithObject($dbConfig);
-  try { DB::init(); } catch (\Exception $ex) {
+  try { DB::setConnectionWithObject($dbConfig); } catch (\Exception $ex) {
     printError('Failed to connect to database');
+    if (DEBUG) printError('Please check engine/config.json.');
     echo $ex->getMessage(); die;
   }
 }
@@ -109,7 +109,7 @@ function createPlan($planName) {
   printSuccess($filename.' created');
 }
 
-$col = (DB::$driver === 'oracle') ? 'DEPLOYMENT' : 'deployment';
+$col = (DB::$engine === 'oracle') ? 'DEPLOYMENT' : 'deployment';
 //------------ db-deploy
 if ($command === 'db-deploy') {
   $nextBatch = DB::getOneVal('SELECT COALESCE(MAX(batch),0)+1 next_batch FROM lolokdb');
