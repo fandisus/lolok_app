@@ -60,6 +60,7 @@ function getFilename(string $path): object {
 
 //After getting APP_PATH and PATH_PARAMS, load the other constants
 $files = Files::GetDirFiles(__DIR__.'/engine/_preload');
+sort($files);
 foreach ($files as $v) include($v);
 
 //After getting APPNAMESPACE from engine/_preload/constants.php --> config.json, autoload models:
