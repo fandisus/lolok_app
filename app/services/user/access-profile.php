@@ -1,7 +1,7 @@
 <?php
 if (!$login->canAccess(APP_PATH, 'read')) header('location:'.WEBHOME.'user/403');
 
-include DIR.'/engine/templates/sidebar_layout.php';
+include DIR.'/app/templates/sidebar_layout.php';
 
 function htmlHead() {?>
 <script src="<?=WEBHOME?>libs/fomantic-2.8/tablesort.js"></script>

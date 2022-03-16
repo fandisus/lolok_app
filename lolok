@@ -64,7 +64,7 @@ $files = Files::GetDirFiles('engine/_preload');
 foreach ($files as $v) include($v);
 
 //After getting APPNAMESPACE from engine/_preload/constants.php --> config.json, autoload models:
-include "engine/models/autoload.php";
+include "app/models/autoload.php";
 //------- END Initialize engine
 
 //Get database connection

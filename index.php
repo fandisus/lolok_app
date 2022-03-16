@@ -12,7 +12,7 @@ function loadStaticFiles() {
     $filename = $route->path.$_GET['_path'];
     if (file_exists($filename) && !is_dir($filename)) {
       if (isset($route->middleware)) {
-        $middlePath = 'engine/middlewares/'.$route->middleware;
+        $middlePath = 'app/middlewares/'.$route->middleware;
         if (file_exists($middlePath)) include $middlePath;
       }
       $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -42,7 +42,7 @@ function getFilename(string $path): object {
   
   if ($path === '' || $akhirPath == '/') $path .= 'index';
   $result->APP_PATH = $path;
-  $path = "app/$path";
+  $path = "app/services/$path";
   $filename = ($reqMethod === 'get') ? "$path.php" : "$path.$reqMethod.php";
   
   $fileFound = file_exists($filename);
@@ -63,7 +63,7 @@ $files = Files::GetDirFiles(__DIR__.'/engine/_preload');
 foreach ($files as $v) include($v);
 
 //After getting APPNAMESPACE from engine/_preload/constants.php --> config.json, autoload models:
-include DIR."/engine/models/autoload.php";
+include DIR."/app/models/autoload.php";
 unset ($files, $v);
 
 if ($fileSearch->found) {
@@ -71,7 +71,7 @@ if ($fileSearch->found) {
   define('PATH_PARAMS', $fileSearch->PATH_PARAMS);
   $filename = $fileSearch->filename;
   unset ($fileSearch);
-  include DIR.'/engine/middlewares/middlewares.php';
+  include DIR.'/app/middlewares/middlewares.php';
   include $filename;
   die;
 }

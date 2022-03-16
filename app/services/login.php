@@ -1,7 +1,7 @@
 <?php
 if (isset($GLOBALS['login'])) header('location:'.WEBHOME.'user/');
 
-include DIR . '/engine/templates/topmenu_layout.php';
+include DIR . '/app/templates/topmenu_layout.php';
 
 function htmlHead() { ?>
   <style type="text/css">

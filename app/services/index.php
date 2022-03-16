@@ -1,6 +1,6 @@
 <?php
 //$_topMenu = '';
-include DIR.'/engine/templates/topmenu_layout.php';
+include DIR.'/app/templates/topmenu_layout.php';
 
 function htmlHead() {}
 function bodyEnd() {}

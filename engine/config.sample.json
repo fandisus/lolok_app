@@ -19,6 +19,6 @@
     "user": { "route":"user/*", "middleware":"userMiddleware.php"}
   },
   "publicFolders": {
-    "public": { "path":"public/", "middleware":"publicMiddleware.php" }
+    "public": { "path":"app/public/", "middleware":"publicMiddleware.php" }
   }
 }

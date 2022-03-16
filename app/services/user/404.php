@@ -4,9 +4,9 @@ define('PATH_PARAMS', '');
 
 $title = '404 '.APPNAME;
 
-include DIR.'/engine/middlewares/allMiddleware.php';
-include DIR.'/engine/middlewares/userMiddleware.php';
-include DIR.'/engine/templates/sidebar_layout.php';
+include DIR.'/app/middlewares/allMiddleware.php';
+include DIR.'/app/middlewares/userMiddleware.php';
+include DIR.'/app/templates/sidebar_layout.php';
 
 function htmlHead() { ?>
   <style>

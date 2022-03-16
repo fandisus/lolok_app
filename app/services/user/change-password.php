@@ -1,5 +1,5 @@
 <?php
-include DIR.'/engine/templates/sidebar_layout.php';
+include DIR.'/app/templates/sidebar_layout.php';
 
 function htmlHead() {?>
 <style>
