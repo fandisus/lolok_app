@@ -13,10 +13,13 @@ class PLAN_NAME {
     return $t->parse();
   }
   public static function deploy() {
-    foreach (self::deploySQLs() as $sql) DB::exec($sql,[]);
+    foreach (self::deploySQLs() as $sql){
+      if (substr($sql, 0, 2) == '--') continue;
+      DB::exec($sql,[]);
+    }
   }
   public static function undeploySQLs() {
-    //Not yet implemented
+    // return ['DROP TABLE IF EXISTS tableName'];
     return [];
   }
   public static function undeploy() {
