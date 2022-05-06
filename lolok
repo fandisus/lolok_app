@@ -58,9 +58,16 @@ if ($garden->getCommand() === 'create-config') {
 }
 
 //------- Initialize engine
+if (!file_exists('engine/config.json')) {
+  printError('config file not found');
+  printError('Please check engine/config.json.');
+  printInfo('or run php lolok create-config');
+  exit;
+}
 $config = json_decode(file_get_contents('engine/config.json'));
 
 $files = Files::GetDirFiles('engine/_preload');
+sort($files);
 foreach ($files as $v) include($v);
 
 //After getting APPNAMESPACE from engine/_preload/constants.php --> config.json, autoload models:
@@ -91,7 +98,7 @@ if ($command === 'db-init') {
   $t->increments('id')->primary()
     ->string('deployment', 100)
     ->integer('batch')->index();
-  foreach ($t->parse() as $sql) DB::exec($sql,[]);
+  $t->execute();
 }
 
 //------------ db-plan
@@ -113,7 +120,7 @@ $col = (DB::$engine === 'oracle') ? 'DEPLOYMENT' : 'deployment';
 //------------ db-deploy
 if ($command === 'db-deploy') {
   $nextBatch = DB::getOneVal('SELECT COALESCE(MAX(batch),0)+1 next_batch FROM lolokdb');
-  $files = Files::GetDirFiles('engine/dbplans', true);
+  $files = Files::GetDirFilesObj('engine/dbplans');
   $dbFiles = DB::get('SELECT deployment FROM lolokdb',[]);
   $dbFiles = array_map(function($row) use ($col) { return $row->$col; }, $dbFiles);
   foreach ($files as $f) {
@@ -160,7 +167,7 @@ if ($command === 'dbseed-run') {
   $runSomething = false;
   $runAll = $garden->getOpt('all');
   if ($runAll) {
-    $files = Files::GetDirFiles('engine/dbseed', true);
+    $files = Files::GetDirFilesObj('engine/dbseed');
     foreach ($files as $f) {
       $className = substr($f->filename, 0, -9);
       include $f->path;
