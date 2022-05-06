@@ -1,57 +1,64 @@
 <?php
+require_once('_fomantic_menu.php');
 //- Only appear for laptop and tablets (larger screen)
-@render($_topMenu);
+$menus = (isset($GLOBALS['menus'])) ? $GLOBALS['menus'] : [];
+$colorCodes = $GLOBALS['colorCodes'];
+$header = (object) [
+  'logo'=>'/images/dot.png',
+  'rightLogo'=>'',
+  'smallLogo'=>'/images/dot.png',
+  'barColor'=>'blue',
+  'menus'=>$menus
+];
 
-function renderFomanticMenuItem($menuItem, $level=0) {
-  if (count($menuItem->subMenus) === 0) {
-    ?><a class="item" href="<?= WEBHOME.$menuItem->href ?>"><?= $menuItem->text ?></a><?php
-  } else {
-    $class = ($level > 0) ? "item" : "ui dropdown item"
-    ?>
-    <div class="<?= $class ?>" level="<?=$level?>">
-      <?= $menuItem->text ?>
-      <i class="dropdown icon"></i>
-      <div class="menu">
-        <?php foreach ($menuItem->subMenus as $sub) renderFomanticMenuItem($sub, ++$level); ?>
-      </div>
-    </div><?php
-  }
-}
+render($header);
 
-function render($topMenu) {
-  //- topMenu: { showLogo:, leftLogo:, rightLogo:, barColor:, menus:[]}
-  //- barcolor is semantic-ui color class
-  if (!isset($topMenu)) {
-    ?><script>alert('Topmenunav need "$_topMenu" variable defined');</script><?php 
-    return;
-  }
+function render($header) { global $colorCodes; ?>
+  <style>
+    .ui.vertical.menu .item > i.icon.left { float: none; margin: 0em 0.35714em 0em 0em; }
+    #mobilesidebar.ui.vertical.sidebar.menu .item { font-size: 1.15em;}
+    #mobilesidebar.ui.vertical.sidebar.menu .item .content .menu .item { font-size: 0.95em; margin: 1em 0 1em 8px; padding:0}
+  </style>
 
+  <div class="mobile only" id="mobilenav">
+    <div class="ui top fixed menu mobile only">
+      <a class="launch icon item" id="m-sidebar-toggle"><i class="content icon"></i></a>
+      <a id="m-logo" class="item" href="/">
+        <img src="<?= $header->smallLogo ?>" style="width:auto; height:25px;"/>
+      </a>
+    </div>
+    <div class="ui left sidebar inverted vertical accordion <?= $header->barColor ?> menu" id="mobilesidebar">
+      <div class="item"><img src="<?= $header->logo ?>" style="margin: 0 auto"/></div>
+      <?php foreach ($header->menus as $menu) renderFomanticSideMenuItem($menu); ?>
+      <a class="item" href="/login"><i class="left key icon"></i> Login</a>
+    </div>
+  </div>
 
-  $colorCodes = (object) ['red'=>'#db2828', 'blue'=>'#2185D0','teal'=>'#00B5AD'];
-  ?>
   <div class="tablet computer only">
     <header class="ui top computer">
-      <?php if ($topMenu->leftLogo !== '') { ?>
+      <!-- Header Logos -->
+      <?php if ($header->logo !== '') { ?>
         <div class="ui container">
           <div id="logoheader">
-            <?php if ($topMenu->leftLogo !== '') { ?>
-              <img class="ui middle aligned image" src="<?= $topMenu->leftLogo ?>" width="80px" />
+            <?php if ($header->logo !== '') { ?>
+              <img class="ui middle aligned image" src="<?= $header->logo ?>" width="80px" />
             <?php } ?>
-            <?php if ($topMenu->rightLogo !== '') { ?>
-              <img class="ui middle aligned right floated image" src="<?= $topMenu->rightLogo ?>" />
+            <?php if ($header->rightLogo !== '') { ?>
+              <img class="ui middle aligned right floated image" src="<?= $header->rightLogo ?>" />
             <?php } ?>
             <div style="clear: both;"></div>
           </div>
         </div>
       <?php } ?>
 
+      <!-- Header Navigation -->
       <div id="menu-strip">
-        <div class="ui sticky" style="z-index: 801; background:<?= $colorCodes->{$topMenu->barColor} ?>;">
+        <div class="ui sticky" style="z-index: 801; background:<?= $colorCodes->{$header->barColor} ?>;">
           <div class="ui container">
-            <div class="ui inverted menu <?= $topMenu->barColor ?>">
-              <a class="item" href="<?= WEBHOME ?>"><i class="home icon"></i></a>
-              <?php foreach ($topMenu->menus as $menu) renderFomanticMenuItem($menu); ?>
-              <a class="right item" href="<?=WEBHOME.'login'?>">Login</a>
+            <div class="ui inverted menu <?= $header->barColor ?>">
+              <a class="item" href="/"><i class="home icon"></i></a>
+              <?php foreach ($header->menus as $menu) renderFomanticMenuItem($menu); ?>
+              <a class="right item" href="/login">Login</a>
             </div>
           </div>
         </div>
