@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "33d30f99b07feaca337c7b49a31e7a4e",
+    "content-hash": "4721d9af1258e8a9dd60a5b474d0ee7d",
     "packages": [
         {
             "name": "ezyang/htmlpurifier",
@@ -59,16 +59,16 @@
         },
         {
             "name": "fandisus/lolok",
-            "version": "2.0.0",
+            "version": "2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fandisus/lolok.git",
-                "reference": "c6eceb1d298dfeb686a74fb207948db3b97b9c71"
+                "reference": "aa63248756138b717d27bdb42e813e5635e62360"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fandisus/lolok/zipball/c6eceb1d298dfeb686a74fb207948db3b97b9c71",
-                "reference": "c6eceb1d298dfeb686a74fb207948db3b97b9c71",
+                "url": "https://api.github.com/repos/fandisus/lolok/zipball/aa63248756138b717d27bdb42e813e5635e62360",
+                "reference": "aa63248756138b717d27bdb42e813e5635e62360",
                 "shasum": ""
             },
             "require": {
@@ -94,9 +94,9 @@
             "description": "Various wrapper functions for PHP",
             "support": {
                 "issues": "https://github.com/fandisus/lolok/issues",
-                "source": "https://github.com/fandisus/lolok/tree/2.0.0"
+                "source": "https://github.com/fandisus/lolok/tree/2.3.2"
             },
-            "time": "2022-03-15T13:00:37+00:00"
+            "time": "2022-05-05T09:58:54+00:00"
         },
         {
             "name": "firebase/php-jwt",
