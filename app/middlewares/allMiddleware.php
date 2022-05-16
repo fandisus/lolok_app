@@ -1,13 +1,31 @@
 <?php
+
+use Fandisus\Lolok\Debug;
+use Fandisus\Lolok\UserAgentInfo;
 use Firebase\JWT\JWT;
 use LolokApp\User;
+use LolokApp\UserLogin;
 
+$login = null;
 if (isset($_COOKIE[JWT_NAME])) {
-  try { $oUser = JWT::decode($_COOKIE[JWT_NAME], JWT_SECRET, ['HS256']); }
-  catch (\Exception $ex) { setcookie(JWT_NAME, '', time()-3600); }
+  /* Logics:
+  0. No need to read db for username and id.
+  0. Just need to confirm jwt with db token.
+  0. $login is stored in global variable. {"username"=>'', "id"=>X, "user_accesses"=>[] }
+  1. No cookie with <JWT_NAME>, then $login = null
+  2. When JWT verified, check JWT in db based on device and IP
+  */
+  function delCookie() { setcookie(JWT_NAME, '', time()-3600); }
+  $jwt = $_COOKIE[JWT_NAME];
+  try { $oJwtUser = JWT::decode($jwt, JWT_SECRET, [JWT_ALGO]); }
+  catch (\Exception $ex) { delCookie(); }
 
-  $dbUser = User::find(['id'=>$oUser->id]);
-  if ($dbUser === null) { setcookie(JWT_NAME, '', time()-3600); }
-  elseif ($dbUser->jwt !== $_COOKIE[JWT_NAME]) $dbUser->logout();
-  else $login = $dbUser;
+  $info = new UserAgentInfo();
+  $oUserLogin = UserLogin::findWhere('WHERE user_fk=:UID AND browser=:BROW AND platform=:PLAT', '*', [
+    'UID'=>$oJwtUser->id, 'BROW'=>$info->browser, 'PLAT'=>$info->platform]);
+  if ($oUserLogin === null) { delCookie(); }
+  else {
+    if ( $oUserLogin->jwt === $jwt) { $login=$oUserLogin; }
+    else { delCookie(); $oUserLogin->delete(); }
+  }
 }

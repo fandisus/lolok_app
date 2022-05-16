@@ -9,5 +9,5 @@ class UserAccess extends Model {
   protected static function hasSerial() { return false; }
   protected static function jsonColumns() { return []; }
 
-  public $uid, $profile;
+  public $id, $user_fk, $access_fk, $created_at, $updated_at;
 }
