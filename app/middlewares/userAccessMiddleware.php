@@ -1,8 +1,7 @@
 <?php
 // $login is set in middlewares/all.php
 
-use LolokApp\AccessProfile;
-if (!isset($login)) header('location:'.WEBHOME);
+if ($login === null) header('location:'.WEBHOME);
 
 $menus = [];
 if ($login->username === 'admin') $menus = AccessProfile::availableMenus();
