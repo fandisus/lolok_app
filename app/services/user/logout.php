@@ -1,3 +1,3 @@
 <?php
-$login->logout();
+$session->login->logout();
 header('location:'.WEBHOME.'login');

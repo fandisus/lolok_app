@@ -1,5 +1,5 @@
 <?php
-if (isset($GLOBALS['login'])) header('location:'.WEBHOME.'user/');
+if ($session->login !== null) header('location:'.WEBHOME.'user/');
 
 include DIR . '/app/templates/topmenu_layout.php';
 

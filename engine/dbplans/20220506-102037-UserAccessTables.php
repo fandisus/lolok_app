@@ -8,14 +8,15 @@ class UserAccessTables {
     $t = new TableComposer('accesses');
     $t->bigIncrements('id')->primary()
       ->string('name',20)
+      ->string('role')
       ->timestampTz('created_at')
       ->timestampTz('updated_at');
     $accessTable = $t->parse();
 
     $t = new TableComposer('access_pages');
     $t->bigInteger('access_fk')->foreign('accesses', 'id', 'cascade', 'cascade')
-      ->string('key')
-      ->primary(['access_fk', 'key'])
+      ->string('url')
+      ->primary(['access_fk', 'url'])
       ->jsonb('rights');
     $accessPagesTable = $t->parse();
 

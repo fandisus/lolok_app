@@ -18,7 +18,7 @@ class UserTables {
     $t = new TableComposer('user_logins');
     $t->string('id')->primary()
       ->bigInteger('user_fk')->foreign('users', 'id', 'cascade', 'cascade')->index()
-      ->string('jwt', 150)->index()
+      ->string('jwt', 200)->index()
       ->string('ip', 20)
       ->string('device')
       ->string('platform')
