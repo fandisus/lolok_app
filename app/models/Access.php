@@ -35,17 +35,21 @@ class Access extends Model {
 
   public static function availablePages() {
     return json_decode(json_encode([
-      ['name'=>'user_management', 'text'=>'User Management', 'icon'=>'users', 'href'=>'', 'subMenus'=>[
-        ['name'=>'users', 'text'=>'Users', 'icon'=>'users', 'href'=>'user/users',
+      ['text'=>'User Management', 'icon'=>'users', 'href'=>'', 'subMenus'=>[
+        ['text'=>'Users', 'icon'=>'users', 'href'=>'user/users',
           'rights'=>['read', 'create', 'update', 'delete', 'changePass'], 'subMenus'=>[]
         ], //Users
-        ['name'=>'access_profile','text'=>'Access Profile', 'icon'=>'user lock', 'href'=>'user/access-profile',
+        ['text'=>'Access Profile', 'icon'=>'user lock', 'href'=>'user/access-profile',
           'rights'=>['read', 'create', 'update', 'delete'], 'subMenus'=>[],
         ]
       ],], //User Management
     ]));
   }
 
+  public function getMenus() {
+    if ($this->role === 'admin') return self::availablePages();
+
+  }
   // private function getRightsFromTree() { //Flatten the menuTree, for checking urls and rights
   //   if ($this->menu_tree === null) return [];
   //   $result = json_decode(json_encode($this->menu_tree));

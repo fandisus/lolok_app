@@ -23,7 +23,15 @@ class User extends Model {
     //WHY JWT: Session will burden server, while JWT does not.
     //Concern: JWT is lengthy, but it's ok as long as we does not store too much data.
     //         For userpk and accesspk, it should be less than 200 chars (132)
-    if (!$this->is_active) JSONResponse::Error('User is inactive');
+    if (!$this->is_active) throw new \Exception('User is inactive');
+    if ($access_pk !== null) {
+      $hasAccess = DB::rowExists('SELECT id FROM user_accesses WHERE user_fk=:UID AND access_fk=:AID', ['UID'=>$this->id, 'AID'=>$access_pk]);
+      if (!$hasAccess) throw new \Exception('Invalid user access');      
+    } else {
+      $firstAccess = DB::getOneVal('SELECT access_fk FROM user_accesses WHERE user_fk=:UID',['UID'=>$this->id]);
+      if ($firstAccess === null) throw new \Exception('User has no user access');
+      $access_pk = $firstAccess;
+    }
     //TODO: Might want to log login actions here.
     $info = new UserAgentInfo();
     //TODO: Might want to add SSO here

@@ -1,6 +1,6 @@
 <?php
 
-include DIR.'/app/templates/sidebar_layout.php';
+include DIR.'/app/templates/sidebar/layout.php';
 
 function htmlHead() {}
 function bodyEnd() {}

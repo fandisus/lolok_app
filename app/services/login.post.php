@@ -10,7 +10,9 @@ if ($oUser === null) JSONResponse::Error('User or password incorrect');
 if ($oUser->password !== User::hashPassword($password)) JSONResponse::Error('User or password incorrect');
 if (!$oUser->is_active) JSONResponse::Error('User is inactive');
 
-$oUser->login();
+try { $oUser->login(); }
+catch (\Throwable $th) { JSONResponse::Error($th->getMessage()); }
+
 JSONResponse::Success();
 
 ?>
