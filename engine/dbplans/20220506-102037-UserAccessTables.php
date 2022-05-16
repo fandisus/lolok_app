@@ -8,8 +8,8 @@ class UserAccessTables {
     $t = new TableComposer('accesses');
     $t->bigIncrements('id')->primary()
       ->string('name',20)
-      ->timestamp('created_at')
-      ->timestamp('updated_at');
+      ->timestampTz('created_at')
+      ->timestampTz('updated_at');
     $accessTable = $t->parse();
 
     $t = new TableComposer('access_pages');
@@ -23,8 +23,8 @@ class UserAccessTables {
     $t->bigIncrements('id')->primary()
       ->bigInteger('user_fk')->foreign('users', 'id', 'cascade', 'cascade')->index()
       ->bigInteger('access_fk')->foreign('accesses', 'id', 'cascade', 'set null')->index()
-      ->timestamp('created_at')
-      ->timestamp('updated_at');
+      ->timestampTz('created_at')
+      ->timestampTz('updated_at');
     $userAccessTable = $t->parse();
 
     return array_merge( $accessTable, $accessPagesTable, $userAccessTable );

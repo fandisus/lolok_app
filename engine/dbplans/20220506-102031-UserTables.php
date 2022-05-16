@@ -18,13 +18,14 @@ class UserTables {
     $t = new TableComposer('user_logins');
     $t->string('id')->primary()
       ->bigInteger('user_fk')->foreign('users', 'id', 'cascade', 'cascade')->index()
-      ->string('jwt')->index()
+      ->string('jwt', 150)->index()
       ->string('ip', 20)
       ->string('device')
       ->string('platform')
       ->string('browser')
-      ->timestamp('created_at')
-      ->timestamp('updated_at');
+      ->index(['user_fk', 'platform', 'browser'])
+      ->timestampTz('created_at')
+      ->timestampTz('updated_at');
     $loginsTable = $t->parse();
 
     $t = new TableComposer('user_tokens');
@@ -33,7 +34,7 @@ class UserTables {
       ->string('type', 10) // email or phone
       ->string('action', 10) // resetpass, confirm, link
       ->string('token')->index()
-      ->timestamp('expiry');
+      ->timestampTz('expiry');
     $userTokensTable = $t->parse();
     
     return array_merge( $userTable, $loginsTable, $userTokensTable );
