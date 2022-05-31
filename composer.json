@@ -11,9 +11,9 @@
     "minimum-stability": "stable",
     "require": {
         "vanilla/garden-cli": "^3.1",
-        "firebase/php-jwt": "^5.4",
         "jenssegers/agent": "^2.6",
-        "fandisus/lolok": "2.3.7-beta"
+        "fandisus/lolok": "2.3.7-beta",
+        "firebase/php-jwt": "^6.2"
     },
     "scripts": {
         "post-create-project-cmd": [

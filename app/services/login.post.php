@@ -8,7 +8,6 @@ $password = $_POST['password'];
 $oUser = User::findWhere('WHERE :USER IN (username, email, phone)', '*', ['USER'=>$username]);
 if ($oUser === null) JSONResponse::Error('User or password incorrect');
 if ($oUser->password !== User::hashPassword($password)) JSONResponse::Error('User or password incorrect');
-if (!$oUser->is_active) JSONResponse::Error('User is inactive');
 
 try { $oUser->login(); }
 catch (\Throwable $th) { JSONResponse::Error($th->getMessage()); }

@@ -13,7 +13,7 @@ $header = (object) [
   'menus'=>$menus,
   'username'=>$session->user->username,
   'availableAccesses'=>$session->available_accesses,
-  'currentAccess'=>$session->access->name
+  'currentAccess'=>$session->currentAccess->name
 ];
 
 ?>

@@ -1,12 +1,10 @@
 <?php
 namespace LolokApp;
 
-use Fandisus\Lolok\DB;
-use Fandisus\Lolok\Debug;
 use Fandisus\Lolok\JSONResponse;
 use Fandisus\Lolok\Model;
 use Fandisus\Lolok\UserAgentInfo;
-use Firebase\JWT\JWT;
+
 
 class User extends Model {
   protected static function tableName() { return 'users'; }
@@ -15,7 +13,6 @@ class User extends Model {
   protected static function jsonColumns() { return []; }
 
   public $id, $username, $email, $phone, $password, $fullname, $is_active;
-  private $_access;
 
   public static function hashPassword($pass) { return hash('sha256', $pass); }
 
@@ -24,36 +21,13 @@ class User extends Model {
     //Concern: JWT is lengthy, but it's ok as long as we does not store too much data.
     //         For userpk and accesspk, it should be less than 200 chars (132)
     if (!$this->is_active) throw new \Exception('User is inactive');
-    if ($access_pk !== null) {
-      $hasAccess = DB::rowExists('SELECT id FROM user_accesses WHERE user_fk=:UID AND access_fk=:AID', ['UID'=>$this->id, 'AID'=>$access_pk]);
-      if (!$hasAccess) throw new \Exception('Invalid user access');      
-    } else {
-      $firstAccess = DB::getOneVal('SELECT access_fk FROM user_accesses WHERE user_fk=:UID',['UID'=>$this->id]);
-      if ($firstAccess === null) throw new \Exception('User has no user access');
-      $access_pk = $firstAccess;
-    }
     //TODO: Might want to log login actions here.
     $info = new UserAgentInfo();
     //TODO: Might want to add SSO here
-    DB::exec('DELETE FROM user_logins WHERE user_fk=:UID AND browser=:BROWSER AND platform=:PLATFORM',
-      ['UID'=>$this->id, 'BROWSER'=>$info->browser, 'PLATFORM'=>$info->platform]
-    );
-    $jwt = JWT::encode(
-      (object)["user"=>$this->id, 'access'=>$access_pk], JWT_SECRET, JWT_ALGO
-    );
-    $uuid = DB::getOneVal('SELECT gen_random_uuid()');
-    $oLogin = new UserLogin([]);
-    $oLogin->id = $uuid;
-    $oLogin->user_fk = $this->id;
-    $oLogin->jwt = $jwt;
-    $oLogin->ip = $info->ip;
-    $oLogin->device = $info->device;
-    $oLogin->platform = $info->platform;
-    $oLogin->browser = $info->browser;
-    $oLogin->created_at = date('Y-m-d H:i:s O');
-    $oLogin->updated_at = date('Y-m-d H:i:s O');
+    $oLogin = UserLogin::createNew($this->id, $access_pk);
+    $oLogin->delPreviousLogin();
     $oLogin->insert();
 
-    setcookie(JWT_NAME, $jwt, 0, '','', false, true);
+    setcookie(JWT_NAME, $oLogin->jwt, 0, '','', false, true);
   }
 }
