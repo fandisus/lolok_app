@@ -40,7 +40,9 @@ function getFilename(string $path): object {
   $result->reqMethod = $reqMethod;
   $akhirPath = substr($path, -1);
   
-  if ($path === '' || $akhirPath == '/') $path .= 'index';
+  if ($path === '') $path = 'index';
+  elseif ($akhirPath == '/') $path .= 'index';
+  else { $path .= '/index'; }
   $result->APP_PATH = $path;
   $path = "app/services/$path";
   $filename = ($reqMethod === 'get') ? "$path.php" : "$path.$reqMethod.php";
