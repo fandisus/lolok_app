@@ -35,6 +35,7 @@ function loadStaticFiles() {
 
 $fileSearch = getFilename($_GET['_path']); //$_GET['path'] is from .htaccess
 function getFilename(string $path): object {
+  $appFolder = 'app/services';
   $result = new \stdClass();
   $reqMethod = strtolower($_SERVER['REQUEST_METHOD']);
   $result->reqMethod = $reqMethod;
@@ -43,19 +44,19 @@ function getFilename(string $path): object {
   if ($path === '') $path = 'index';
   elseif ($akhirPath == '/') $path .= 'index';
   else { $path .= '/index'; }
-  $result->APP_PATH = $path;
-  $path = "app/services/$path";
+  $path = "$appFolder/$path";
   $filename = ($reqMethod === 'get') ? "$path.php" : "$path.$reqMethod.php";
   
   $fileFound = file_exists($filename);
   while (!$fileFound) {
     $path = dirname($path);
-    if ($path === '.') break;
+    if ($path === $appFolder) break;
     $filename = ($reqMethod === 'get') ? "$path.php" : "$path.$reqMethod.php";
     $fileFound = file_exists($filename);
   }
-  $result->PATH_PARAMS = substr($result->APP_PATH, strlen($path)-4, 500);
   $result->found = $fileFound;
+  $result->APP_PATH = substr($path, strlen($appFolder)+1);
+  $result->PATH_PARAMS = substr($_GET['_path'], strlen($path)-strlen($appFolder));
   $result->filename = ($fileFound) ? $filename : '';
   return $result;
 }
