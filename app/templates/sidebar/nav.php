@@ -127,7 +127,7 @@ $header = (object) [
 
   <!-- mainContent -->
   <div style="overflow:auto" id="maincontainer">
-  <?php if (function_exists('mainContent')) bodyEnd(); ?>
+  <?php if (function_exists('mainContent')) mainContent(); ?>
   </div>
 </div>
 
