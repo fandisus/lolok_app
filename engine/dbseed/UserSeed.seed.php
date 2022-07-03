@@ -23,7 +23,8 @@ class UserSeed {
     Access::multiInsert($accesses);
 
     $accessPages = [
-      (object)['access_fk'=>1, 'url'=>'/user/user-management', 'rights'=>['getUsers', 'saveUser', 'delUser', 'changePass', 'getAccesses', 'saveAccess', 'delAccess']],
+      (object)['access_fk'=>1, 'url'=>'/user/access-profile', 'rights'=>['create', 'update', 'delete']],
+      (object)['access_fk'=>1, 'url'=>'/user/user-management', 'rights'=>['create', 'update', 'delete', 'changePass']],
     ];
     AccessPage::multiInsert($accessPages, 10000, true);
 
