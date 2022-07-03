@@ -1,9 +1,10 @@
 <?php
 use Fandisus\Lolok\UserAgentInfo;
+use LolokApp\Helper\Session;
 use LolokApp\User;
 use LolokApp\UserLogin;
 
-$session = new stdClass();
+$session = new Session();
 $session->login = null;
 if (isset($_COOKIE[JWT_NAME]) || isset($_POST[JWT_NAME])) {
   /* 

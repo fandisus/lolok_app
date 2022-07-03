@@ -48,7 +48,7 @@ class Access extends Model {
 
   public function getMenus() {
     if ($this->role === 'admin') return self::availablePages();
-
+    return self::availablePages();
   }
   // private function getRightsFromTree() { //Flatten the menuTree, for checking urls and rights
   //   if ($this->menu_tree === null) return [];
