@@ -15,5 +15,5 @@
 <script src="<?= WEBHOME ?>libs/fomantic-2.8/semantic.min.js" charset="utf-8"></script>
 <!-- Lodash -->
 <script src="<?= WEBHOME ?>libs/lodash.min.js"></script>
-<script type="text/javascript" src="<?= WEBHOME ?>libs/fandi/myloading.js"></script>
+<script type="text/javascript" src="<?= WEBHOME ?>libs/fandi/myAsyncLoading.js"></script>
 <script>const WEBHOME = "<?= WEBHOME ?>";</script>
