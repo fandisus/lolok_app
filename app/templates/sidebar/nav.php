@@ -112,15 +112,17 @@ $header = (object) [
 
   <!-- sidemenu desktop -->
   <style>
-    #sidenav { position:relative; background: url('/images/sidebar-1.jpg') no-repeat; overflow:auto; width: 250px; transition: width 0.3s; }
-    #sidenavcollapse { position:absolute; top:10px; left:8px; z-index:10; cursor:pointer; }
-    #sidenav > .menu { width:100%; min-height:100%; background:rgba(240,248,255,0.65); }
+    #sidenav { position:relative; background: url('/images/sidebar-1.jpg') no-repeat; width: 250px; transition: width 0.3s; }
+    #sidemenu { overflow:auto; width:100%; height:100% }
+    #sidemenu > .menu { width:100%; min-height:100%; height: 100%; background:rgba(240,248,255,0.65); }
+    #sidenavcollapse { position:absolute; top:10px; right:-12px; z-index:10; cursor:pointer; }
   </style>
   <div class="computer only" id="sidenav">
-    <h2 id="sidenavcollapse"><i class="chevron circle left icon"></i></h2>
-    <div class="ui left vertical accordion menu">
-      <div class="item">&nbsp;</div>
-      <?php foreach ($header->menus as $menu) renderFomanticSideMenuItem($menu); ?>
+    <h2 id="sidenavcollapse"><i class="small chevron circle left icon"></i></h2>
+    <div id="sidemenu">
+      <div class="ui left vertical accordion menu">
+        <?php foreach ($header->menus as $menu) renderFomanticSideMenuItem($menu); ?>
+      </div>
     </div>
   </div>
 
@@ -139,7 +141,7 @@ $(document).ready(function() {
   $('#sidenavcollapse').click(()=>{
     let curWidth = $('#sidenav').css('width');
     if (curWidth === '250px') {
-      $('#sidenav').css('width', '50px');
+      $('#sidenav').css('width', '5px');
       $('#sidenavcollapse .chevron').removeClass('left');
       $('#sidenavcollapse .chevron').addClass('right');
       $('#sidenav .menu').fadeOut();
