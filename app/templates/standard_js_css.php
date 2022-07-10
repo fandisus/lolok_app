@@ -5,7 +5,7 @@
 <script src="<?= WEBHOME ?>libs/jquery3.3.1.min.js" charset="utf-8"></script>
 
 <!-- vuejs -->
-<script src="<?= WEBHOME ?>libs/vue 3.2.14/vue.global.js" charset="utf-8"></script>
+<script src="https://unpkg.com/vue@3"></script>
 <!-- Momentjs -->
 <script src="<?= WEBHOME ?>libs/moment.min.js"></script>
 <!-- Csshake -->
