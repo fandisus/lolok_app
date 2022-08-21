@@ -1,5 +1,8 @@
 <?php
-if ($session->login !== null) header('location:'.WEBHOME.'user/');
+
+use LolokApp\Helper\Session;
+
+if (Session::$login !== null) header('location:'.WEBHOME.'user/');
 
 include DIR . '/app/templates/topmenu_layout.php';
 

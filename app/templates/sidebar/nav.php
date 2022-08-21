@@ -1,6 +1,7 @@
 <?php
 
 use Fandisus\Lolok\Debug;
+use LolokApp\Helper\Session;
 
 include DIR.'/app/templates/_fomantic_menu.php';
 
@@ -11,9 +12,9 @@ $header = (object) [
   'smallLogo'=>'/images/dot.png',
   'barColor'=>'blue',
   'menus'=>$menus,
-  'username'=>$session->user->username,
-  'availableAccesses'=>$session->available_accesses,
-  'currentAccess'=>$session->currentAccess->name
+  'username'=>Session::$user->username,
+  'availableAccesses'=>Session::$available_accesses,
+  'currentAccess'=>Session::$currentAccess->name
 ];
 
 ?>

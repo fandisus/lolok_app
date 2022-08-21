@@ -3,13 +3,12 @@
 use LolokApp\Access;
 use LolokApp\Helper\Session;
 
-$session = Session::$obj;
 //If not logged in, can not access user pages / resources
-if ($session->login === null) header('location:'.WEBHOME);
-$session->available_accesses = Access::ofUser($session->oJwt->user);
-$session->currentAccess = Access::load($session->oJwt->access);
+if (Session::$login === null) header('location:'.WEBHOME);
+Session::$available_accesses = Access::ofUser(Session::$oJwt->user);
+Session::$currentAccess = Access::load(Session::$oJwt->access);
 
-$menus = $session->currentAccess->getMenus();
+$menus = Session::$currentAccess->getMenus();
 // if ($login->username === 'admin') $menus = Access::availablePages();
 // else {
 //   $menus = $login->getMenuTree();

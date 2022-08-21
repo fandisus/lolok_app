@@ -4,8 +4,6 @@ use LolokApp\Helper\Session;
 use LolokApp\User;
 use LolokApp\UserLogin;
 
-$session = new Session();
-$session->login = null;
 if (isset($_COOKIE[JWT_NAME]) || isset($_POST[JWT_NAME])) {
   /* 
   Purpose:
@@ -22,17 +20,17 @@ if (isset($_COOKIE[JWT_NAME]) || isset($_POST[JWT_NAME])) {
   5. When okay, pug UserLogin object to $session->login.
   */
   $jwt = (isset($_COOKIE[JWT_NAME])) ? $_COOKIE[JWT_NAME] : $_POST[JWT_NAME];
-  try { $session->oJwt = UserLogin::decodeJWT($jwt); }
+  try { Session::$oJwt = UserLogin::decodeJWT($jwt); }
   catch (\Exception $ex) { UserLogin::delCookies(); }
 
   $info = new UserAgentInfo();
   $oUserLogin = UserLogin::findWhere('WHERE user_fk=:UID AND browser=:BROW AND platform=:PLAT', '*',
-    ['UID'=>$session->oJwt->user, 'BROW'=>$info->browser, 'PLAT'=>$info->platform]);
+    ['UID'=>Session::$oJwt->user, 'BROW'=>$info->browser, 'PLAT'=>$info->platform]);
   if ($oUserLogin === null) { UserLogin::delCookies(); }
   else {
     if ( $oUserLogin->jwt === $jwt) {
-      $session->login = $oUserLogin;
-      $session->user = User::find(['id'=>$session->oJwt->user]);
+      Session::$login = $oUserLogin;
+      Session::$user = User::find(['id'=>Session::$oJwt->user]);
     }
     else { $oUserLogin->logout(); }
   }

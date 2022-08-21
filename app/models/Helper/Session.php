@@ -6,13 +6,9 @@ use LolokApp\User;
 use LolokApp\UserLogin;
 
 class Session {
-  public static ?Session $obj;
-  public ?object $oJwt;
-  public ?User $user;
-  public ?UserLogin $login;
-  public ?Access $currentAccess;
-  public ?array $available_accesses;
-  public function __construct() {
-    self::$obj = $this;
-  }
+  public static ?object $oJwt = null;
+  public static ?User $user = null;
+  public static ?UserLogin $login = null;
+  public static ?Access $currentAccess = null;
+  public static ?array $available_accesses = null;
 }
