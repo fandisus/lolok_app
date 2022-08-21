@@ -12,8 +12,14 @@ $(document).ready(function() {
 });
 
 class tr {
-  static sekian(anu) {
-    alert(anu);
+  static notifyError(message) {
+    $('body').toast({class:'error', message: message, title:'Error', showIcon:'exclamation triangle'});
+  }
+  static notifyWarning(message) {
+    $('body').toast({class:'warning', message: message, showIcon:'info circle'});
+  }
+  static notifySuccess(message) {
+    $('body').toast({class:'success', message: message, title:'Success', showIcon:'thumbs up outline'});
   }
   static loading(Show) {
     if (Show) $("#loadScreen").fadeIn();
@@ -23,7 +29,7 @@ class tr {
     try {
       if (reply.result === "error") {
         if(typeof errorcb === 'function') errorcb(reply);
-        else $('body').toast({class:'error', message: reply.message, title:'Error'});
+        else this.notifyError(reply.message);
         return false;
       }
       else if (reply.result === "success") { return true; }
@@ -31,11 +37,20 @@ class tr {
     } catch (e) {
       console.log(reply);
       console.log(e);
-      $('body').toast({class:'error', message: "Unknown Error. Check console log (F12) for details", title:'Error'});
+      this.notifyError('Unknown Error. Check console log (F12) for details');
       return false;
     }
   }
 
+  static async handleLaravelError(r) {
+    try {
+      let laraJson = r.responseJSON;
+      this.notifyError(laraJson.message);
+      for (let err in laraJson.errors) {
+        this.notifyWarning(laraJson.errors[err].join(', '));
+      }
+    } catch (error) { console.log(r.responseText); } //When it is not laraJson, just console log the error.
+  }
   static async post(uri,oPost, errorcb) {
     let that = this;
     return new Promise((reso,reje) => {
@@ -46,7 +61,7 @@ class tr {
         else reso(false);
       },'json')
       .always(function() { that.loading(false); })
-      .fail(function(r) { console.log(r.responseText); reje(r.responseText); });
+      .fail(function(r) { that.handleLaravelError(r); reso(false); });
     });
   }
 
@@ -57,17 +72,17 @@ class tr {
         if (that.handleResponse(reply,errorcb)) reso(reply);
         else reso(false);
       },'json')
-      .fail(function(r) { console.log(r.responseText); reje(r.responseText); });
+      .fail(function(r) { that.handleLaravelError(r); reso(false); });
     });
   }
   //modifikasi dari http://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously-with-jquery
   static async postForm(uri,form,errorcb) { //Form is a DOM object e.g: $("#formLoadFCA")[0]
-    await this.postFormData(uri, new FormData(form),errorcb);
+    return await this.postFormData(uri, new FormData(form),errorcb);
   };
   static async postFormFromObj(uri, obj, errorcb) {
     var formData = new FormData();
     for (var i in obj) formData.append(i, obj[i]);
-    await this.postFormData(uri, formData, errorcb);
+    return await this.postFormData(uri, formData, errorcb);
   };
   //formData is formData: use: formData = new FormData();  formData.append(key,val);
   //Untuk ambil data gambar: formData.append('gambar', $('#fileInput')[0].files[0]))
@@ -78,7 +93,7 @@ class tr {
       $.ajax({
         dataType:'json',
         url:uri, type:'POST',data:formData,contentType:'multipart/form-data',
-        error: function(j, stat, error) { console.log(j); console.log(stat); console.log(error); },
+        error: function(j, stat, error) { /** Handled below at .fail */ },
         success: function(reply) {
           if (that.handleResponse(reply,errorcb)) reso(reply);
           else reso(false);
@@ -94,7 +109,7 @@ class tr {
         cache:false, contentType:false, processData:false
       })
       .always(function() { tr.loading(false); })
-      .fail(function(r) { console.log(r.responseText); reje(r.responseText); });
+      .fail(function(r) { that.handleLaravelError(r); reso(false); });
     });
   };
   
