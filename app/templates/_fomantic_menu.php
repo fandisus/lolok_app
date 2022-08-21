@@ -23,7 +23,7 @@ function renderFomanticMenuItem($menuItem, $level=0) {
 
 function renderFomanticSideMenuItem($menuItem, $level=0) {
   if (count($menuItem->subMenus) === 0) {
-    ?><a class="item" href="/<?= $menuItem->href ?>">
+    ?><a class="item" href="/<?= $menuItem->url ?>">
       <?php if ($menuItem->icon) echo "<i class=\"left $menuItem->icon icon\"></i>"; ?>
       <?= $menuItem->text ?>
     </a><?php

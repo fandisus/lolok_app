@@ -7,7 +7,7 @@ class UserAccessTables {
   public static function deploySQLs() {
     $t = new TableComposer('accesses');
     $t->bigIncrements('id')->primary()
-      ->string('name',20)
+      ->string('name',20)->unique()
       ->string('role')
       ->timestampTz('created_at')
       ->timestampTz('updated_at');

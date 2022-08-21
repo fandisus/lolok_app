@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "60203a82aacff8423b7430d7638f37e2",
+    "content-hash": "de383d2f1f0a720da10dad28706b7c0a",
     "packages": [
         {
             "name": "ezyang/htmlpurifier",
@@ -59,16 +59,16 @@
         },
         {
             "name": "fandisus/lolok",
-            "version": "2.3.7-BETA",
+            "version": "2.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fandisus/lolok.git",
-                "reference": "e914388c78ab6e0bb6abe6a0f6ceed3d875be4a8"
+                "reference": "0a19f4b50fe11b1a8a6297223ae3cd6a0d11f97c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fandisus/lolok/zipball/e914388c78ab6e0bb6abe6a0f6ceed3d875be4a8",
-                "reference": "e914388c78ab6e0bb6abe6a0f6ceed3d875be4a8",
+                "url": "https://api.github.com/repos/fandisus/lolok/zipball/0a19f4b50fe11b1a8a6297223ae3cd6a0d11f97c",
+                "reference": "0a19f4b50fe11b1a8a6297223ae3cd6a0d11f97c",
                 "shasum": ""
             },
             "require": {
@@ -94,22 +94,22 @@
             "description": "Various wrapper functions for PHP",
             "support": {
                 "issues": "https://github.com/fandisus/lolok/issues",
-                "source": "https://github.com/fandisus/lolok/tree/2.3.7-BETA"
+                "source": "https://github.com/fandisus/lolok/tree/2.3.6"
             },
-            "time": "2022-05-16T02:26:04+00:00"
+            "time": "2022-08-21T16:39:54+00:00"
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v6.2.0",
+            "version": "v6.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "d28e6df83830252650da4623c78aaaf98fb385f3"
+                "reference": "018dfc4e1da92ad8a1b90adc4893f476a3b41cb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/d28e6df83830252650da4623c78aaaf98fb385f3",
-                "reference": "d28e6df83830252650da4623c78aaaf98fb385f3",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/018dfc4e1da92ad8a1b90adc4893f476a3b41cb8",
+                "reference": "018dfc4e1da92ad8a1b90adc4893f476a3b41cb8",
                 "shasum": ""
             },
             "require": {
@@ -156,9 +156,9 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v6.2.0"
+                "source": "https://github.com/firebase/php-jwt/tree/v6.3.0"
             },
-            "time": "2022-05-13T20:54:50+00:00"
+            "time": "2022-07-15T16:48:45+00:00"
         },
         {
             "name": "jaybizzle/crawler-detect",
@@ -460,9 +460,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "fandisus/lolok": 10
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

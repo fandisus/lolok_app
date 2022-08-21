@@ -23,8 +23,9 @@ class UserSeed {
     Access::multiInsert($accesses);
 
     $accessPages = [
-      (object)['access_fk'=>1, 'url'=>'/user/access-profile', 'rights'=>['create', 'update', 'delete']],
-      (object)['access_fk'=>1, 'url'=>'/user/user-management', 'rights'=>['create', 'update', 'delete', 'changePass']],
+      (object)['access_fk'=>1, 'url'=>'user/access', 'rights'=>['create', 'update', 'delete']],
+      (object)['access_fk'=>1, 'url'=>'user/users', 'rights'=>['create', 'update', 'delete', 'changePass']],
+      (object)['access_fk'=>1, 'url'=>'user/grand-child', 'rights'=>['create', 'update', 'delete']],
     ];
     AccessPage::multiInsert($accessPages, 10000, true);
 
@@ -33,17 +34,5 @@ class UserSeed {
       (object)['id'=>2, 'user_fk'=>2, 'access_fk'=>1, 'created_at'=>'2022-05-16', 'updated_at'=>'2022-05-16'],
     ];
     UserAccess::multiInsert($userAccess);
-    // $ap = new AccessProfile([
-    //   'name'=>'All',
-    //   'menu_tree'=>AccessProfile::availableMenus()
-    // ]);
-    // $ap->insert();
-
-    // $ua = new UserAccess([
-    //   'uid'=> 2,
-    //   'profile'=>'All'
-    // ]);
-    // $ua->insert();
-
   }
 }

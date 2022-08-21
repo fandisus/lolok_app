@@ -83,7 +83,7 @@ export default {
       let pages = pageRights.map((pr)=>pr.url);
       if (pages.includes(this.menuitem.url)) {
         this.selected = true;
-        let rightsToSet = pageRights.find(pr=>pr.url === this.menuitem.url);
+        let rightsToSet = pageRights.find(pr=>pr.url === this.menuitem.url).rights;
         for (let r of vmrights) r.selected = rightsToSet.includes(r.right);
       }
     },
