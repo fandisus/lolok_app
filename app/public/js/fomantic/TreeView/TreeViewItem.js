@@ -45,6 +45,18 @@ export default {
       this.selected = !this.selected;
       this.selectEffects();
     },
+    selectEffects:function() {
+      let menuitems = this.$refs.menuitems ?? [];
+      if (this.selected){
+        for (let sub of menuitems) sub.selectAll();
+      } else {
+        for (let sub of menuitems) sub.unselectAll();
+      }
+      this.$emit('selectChanged', this.selected);
+      let rights = this.$refs.rights;
+      if (!rights) return;
+      for (let r of rights) r.selected = this.selected;
+    },
     handleSelectEmit:function(val) {
       this.$emit('selectChanged', val);
       let menuitems = this.$refs.menuitems ?? [];
