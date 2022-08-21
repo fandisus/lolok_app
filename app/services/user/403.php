@@ -1,7 +1,10 @@
 <?php
+
+use LolokApp\Helper\Session;
+
 $title = '403 '.APPNAME;
 
-include DIR.'/app/templates/sidebar_layout.php';
+include DIR.'/app/templates/sidebar/layout.php';
 
 function htmlHead() { ?>
   <style>
@@ -16,13 +19,15 @@ function htmlHead() { ?>
       border: 5px solid white; border-radius: 10px;
       font-size:7em;
     }
+    #center-container h2 { margin:0; padding:0;}
   </style>
 <?php }
 
 function mainContent() { ?>
     <div id="center-container">
+      <div><em data-emoji=":person_gesturing_no:" class="big"></em></div>
       <h1 id="kode">403</h1>
-      <?php if (isset($GLOBALS['login'])) { ?>
+      <?php if (isset(Session::$login)) { ?>
         <h2 id="keterangan">Sorry, you might need to login as another user to access this page.</h2>
         <div>Try changing user access or select different menu.</div>
         <div>Or click this link to <a href="/login">logout</a></div>
