@@ -1,3 +1,8 @@
+let componentStyle = document.createElement('style');
+componentStyle.innerHTML = `
+.tvi.item > .content > .description > input[type=checkbox] { margin-right:3px; }
+`;
+document.head.appendChild(componentStyle);
 export default {
   name: 'MenuRight',
   components: {},
@@ -6,7 +11,8 @@ export default {
     selected:true
   } },
   template:`
-    <span class="ui small text" :class="{green: selected}" @click="toggle($event)">{{right}}&nbsp;</span>
+    <input type="checkbox" v-model="selected" v-if="interactive"/>
+    <span class="ui text" :class="{green: selected}" @click="toggle($event)">{{right}}&nbsp;</span>
   `,
   mounted: function() {},
   methods: {

@@ -2,7 +2,8 @@ let componentStyle = document.createElement('style');
 componentStyle.innerHTML = `
 .tvi.item > .content > .header,
 .tvi.item > .content > .description { user-select:none; }
-.tvi.item > .content > .description { padding-top:4px; }
+.tvi.item > .content > .description { padding-top:2px; }
+.list > .tvi.item > .content > .list { padding-top:5px; }
 `;
 document.head.appendChild(componentStyle);
 
@@ -19,6 +20,7 @@ export default {
     <i :class="[icon]" class="icon" @click="toggle"></i>
     <div class="content">
       <div class="header" :title="menuitem.url">
+        <input type="checkbox" v-model="selected" @change="selectEffects" v-if="interactive"/>
         <span :class="[selectClass]" class="ui text" @click="select">
           <span v-if="!menuitem.subMenus" class="ui red text">[mobile]</span> {{menuitem.text}}
         </span>
@@ -27,7 +29,7 @@ export default {
         <menu-right v-for="r in menuitem.rights" :right="r" ref="rights"></menu-right>
       </div>
       <template v-if="menuitem.subMenus">
-        <div class="list" v-if="menuitem.subMenus.length > 0 && !colapsed">
+        <div class="list" v-show="menuitem.subMenus.length > 0 && !colapsed">
           <tree-view-item v-for="m in menuitem.subMenus" :menuitem="m" @select-changed="handleSelectEmit" ref="menuitems"></tree-view-item>
         </div>
       </template>
@@ -46,25 +48,21 @@ export default {
       this.selectEffects();
     },
     selectEffects:function() {
-      let menuitems = this.$refs.menuitems ?? [];
-      if (this.selected){
-        for (let sub of menuitems) sub.selectAll();
-      } else {
-        for (let sub of menuitems) sub.unselectAll();
-      }
-      this.$emit('selectChanged', this.selected);
+      if (this.selected) this.selectAll();
+      else this.unselectAll();
+      this.$emit('selectChanged');
       let rights = this.$refs.rights;
       if (!rights) return;
       for (let r of rights) r.selected = this.selected;
     },
-    handleSelectEmit:function(val) {
-      this.$emit('selectChanged', val);
+    handleSelectEmit:function() {
       let menuitems = this.$refs.menuitems ?? [];
       //Cek apakah semua anak terpilih atau tidak terpilih?
       let firstSubSelection = menuitems[0].selected;
       for (let m of menuitems) if (m.selected !== firstSubSelection) return;
       //Jika sama semua, samakan parent.
       this.selected = firstSubSelection;
+      this.$emit('selectChanged');
     },
     unselect:function() { //Temporarily not used.
       this.selected = false;
