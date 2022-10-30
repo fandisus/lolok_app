@@ -13,7 +13,7 @@ function mainContent() { ?>
     <ul>
         <li>PHP</li>
         <li>Fandisus/Lolok composer package for DB and model purpose</li>
-        <li>vanilla/garden-cli composer package for lolok cli</li>
+        <li>vanilla/garden-cli composer package for lolok cli with <a href='https://github.com/vanilla/garden-cli/issues/42'>known issues</a></li>
         <li>Vue JS</li>
         <li>Fomantic UI + jQuery</li>
         <li>Momentjs</li>

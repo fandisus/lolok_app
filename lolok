@@ -24,8 +24,11 @@ $cli = Cli::create()
   ->description('Create database plan file.')
   ->arg('name', 'The database plan name', true)
   //----------
-  ->command('db-review-plans')
-  ->description('Show deployed and undeployed plans.')
+  // ->command('db-review-plans')
+  // ->description('Show deployed and undeployed plans.')
+  //----------
+  ->command('db-queries')
+  ->description('Prints all db plan queries.')
   //----------
   ->command('db-deploy')
   ->description('Deploy database plan files.')
@@ -116,9 +119,22 @@ function createPlan($planName) {
   printSuccess($filename.' created');
 }
 
+if ($command === 'db-queries') {
+  $files = Files::GetDirFilesObj('engine/dbplans');
+  foreach ($files as $f) {
+    $className = substr(substr($f->filename, 16, 999), 0, -4);
+    include $f->path;
+    $queries = $className::deploySQLs();
+    foreach ($queries as $q) echo "$q\n";
+  }
+}
+
 $col = (DB::$engine === 'oracle') ? 'DEPLOYMENT' : 'deployment';
 //------------ db-deploy
 if ($command === 'db-deploy') {
+  // $checkInit = DB::rowExists('SELECT * FROM pg_catalog.pg_tables WHERE tablename=:DBNAME',['DBNAME'=>'lolokdb']);
+  // if (!$checkInit) { printError('Please run php lolok db-init first'); die; }
+
   $nextBatch = DB::getOneVal('SELECT COALESCE(MAX(batch),0)+1 next_batch FROM lolokdb');
   $files = Files::GetDirFilesObj('engine/dbplans');
   $dbFiles = DB::get('SELECT deployment FROM lolokdb',[]);
@@ -136,6 +152,9 @@ if ($command === 'db-deploy') {
 
 //------------ db-undeploy
 if ($command === 'db-undeploy') {
+  $checkInit = DB::rowExists('SELECT * FROM pg_catalog.pg_tables WHERE tablename=:DBNAME',['DBNAME'=>'lolokdb']);
+  if (!$checkInit) { printError('Please run php lolok db-init first'); die; }
+  
   $prevBatch = DB::getOneVal('SELECT COALESCE(MAX(batch),0) prev_batch FROM lolokdb');
   $files = DB::get('SELECT deployment FROM lolokdb WHERE batch=:BATCH ORDER BY id DESC',['BATCH'=>$prevBatch]);
   foreach ($files as $f) {

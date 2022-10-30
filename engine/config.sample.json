@@ -6,6 +6,7 @@
     "APPNAMESPACE": "LolokApp",
     "LOGO_IMAGE":"images/dot.png",
     "JWT_NAME":"LolokJWT",
+    "JWT_ALGO":"ES256",
     "JWT_SECRET":"REPLACE_THIS_SECRET"
   },
   "DBConnections": {
@@ -14,9 +15,9 @@
     "oracle": {"host":"localhost", "engine":"oracle", "dbname":"xe", "username":"SYSTEM", "password":"SYSTEM", "port":1521}
   },
   "middlewares": {
-    "all": { "route":"*", "middleware":"allMiddleware.php"},
-    "guest": { "route":"*", "except":"user/*", "middleware":"guestMiddleware.php"},
-    "user": { "route":"user/*", "middleware":"userMiddleware.php"}
+    "all": { "route":"*", "middleware":"loginMiddleware.php"},
+    "guest": { "route":"*", "except":"user/*", "middleware":"guestMenuMiddleware.php"},
+    "user": { "route":"user/*", "middleware":"userAccessMiddleware.php"}
   },
   "publicFolders": {
     "public": { "path":"app/public/", "middleware":"publicMiddleware.php" }

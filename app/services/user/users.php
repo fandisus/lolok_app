@@ -1,7 +1,5 @@
 <?php
-if (!$login->canAccess(APP_PATH, 'read')) header('location:'.WEBHOME.'user/403');
-
-include DIR . '/app/templates/sidebar_layout.php';
+include DIR.'/app/templates/sidebar/layout.php';
 
 function htmlHead() { ?>
   <style>
@@ -29,11 +27,11 @@ function mainContent() { ?>
       <thead>
         <tr>
           <th></th>
-          <th>Username</th>
-          <th>Access Profile</th>
           <th>Name</th>
+          <th>Username</th>
           <th>Email</th>
           <th>Phone</th>
+          <th>Accesses</th>
         </tr>
       </thead>
       <tbody>
@@ -43,11 +41,13 @@ function mainContent() { ?>
             <i class="lock icon islink" @click="showCPass(u)"></i>
             <i class="red delete icon islink" @click="delUser(u)"></i>
           </td>
-          <td>{{u.username}}</td>
-          <td>{{u.accessProfile}}</td>
           <td>{{u.fullname}}</td>
+          <td>{{u.username}}</td>
           <td>{{u.email}}</td>
           <td>{{u.phone}}</td>
+          <td>
+            <div class="ui mini blue label" v-for="a in u.accesses">{{a}}</div>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -65,11 +65,14 @@ function mainContent() { ?>
           </template>
           <div class="inline field"><label>Email</label><input type="email" v-model="modUser.email" /></div>
           <div class="inline field"><label>Phone</label><input type="text" v-model="modUser.phone" /></div>
-          <div class="inline field"><label>Access Profile</label>
-            <select v-model="modUser.accessProfile">
-              <option :value="p" v-for="p in accessProfiles">{{p}}</option>
+          <div class="inline field">
+            <label>Accesses</label>
+            <select v-model="modUser._selAccess" @change="addAccess">
+              <option :value="a" v-for="a in accesses">{{a}}</option>
             </select>
+            <button class="ui mini circular icon green button" @click="addAccess"><i class="plus icon"></i></button>
           </div>
+          <div class="ui blue label" v-for="a in modUser.accesses" @click="remAccess(a)">{{a}}<i class="delete icon"></i></div>
         </div>
       </div>
       <div class="actions">
@@ -99,6 +102,5 @@ function mainContent() { ?>
       </div>
     </div>
 
-    <yes-no-modal ref="yesno"></yes-no-modal>
   </div>
 <?php }

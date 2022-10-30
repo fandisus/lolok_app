@@ -1,5 +1,18 @@
 #app { padding: 15px; }
 .ui.table { white-space: nowrap; }
 .ui.table td { padding: 0.10em; }
-.islink { cursor: pointer; }
+
+a { text-decoration:underline;}
+.islink { cursor: pointer; text-decoration: underline; color: blue; }
 .bold { font-weight: bolder;}
+
+.flex {display:flex !important;}
+.flex-vcenter {flex-direction: column; justify-content: center;}
+.flex-vtop { flex-direction: column; justify-content: flex-start;}
+.flex-hcenter { flex-direction: row; justify-content:center;}
+.text-vmid { vertical-align: middle;}
+
+.only {display:none;}
+@media (max-width:767px) { .mobile.only {display:block;}}
+@media (min-width:768px) and (max-width:991px) { .tablet.only {display:block;}}
+@media (min-width:992px) { .computer.only {display:block;}}
