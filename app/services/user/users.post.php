@@ -2,7 +2,7 @@
 
 use Fandisus\Lolok\DB;
 use Fandisus\Lolok\JSONResponse;
-use LolokApp\AccessProfile;
+use LolokApp\Access;
 use LolokApp\User;
 use LolokApp\UserAccess;
 
@@ -10,24 +10,25 @@ if (!function_exists($_POST['a'])) JSONResponse::Error("Service {$_POST['a']} no
 else $_POST['a']();
 
 function init() {
-  if (!$GLOBALS['login']->canAccess(APP_PATH, 'read')) JSONResponse::Error('Access denied');
   try {
-    $dbres = AccessProfile::all('name');
-    $accessProfiles = array_map(function($row) { return $row->name; }, $dbres);
+    $dbres = Access::all('name');
+    $accesses = array_map(function($row) { return $row->name; }, $dbres);
   
     $sql = <<<SQL
-      SELECT u.id, u.username, u.fullname, u.email, u.phone, ua.profile accessProfile
+      SELECT u.id, u.username, u.fullname, u.email, u.phone, string_agg(a."name", ',' order by a."name") accesses
       FROM users u
-      LEFT JOIN user_accesses ua ON ua.uid=u.id
+      LEFT JOIN user_accesses ua ON u.id = ua.user_fk
+      LEFT JOIN accesses a ON a.id = ua.access_fk
+      GROUP BY u.id
       ORDER BY u.username
 SQL;
     $users = DB::get($sql);
-    JSONResponse::Success(['accessProfiles'=>$accessProfiles, 'users'=>$users]);
+    foreach ($users as &$u) $u->accesses = explode(',', $u->accesses);
+    JSONResponse::Success(['accesses'=>$accesses, 'users'=>$users]);
   } catch (\Exception $ex) { JSONResponse::Error($ex->getMessage()); }
 }
 
 function saveUser() {
-  if (!$GLOBALS['login']->canAccess(APP_PATH, 'create')) JSONResponse::Error('Access denied');
   $postUser = json_decode($_POST['u']);
   if (trim($postUser->username) === '') JSONResponse::Error('Username is required');
   if (trim($postUser->fullname) === '') JSONResponse::Error('Full name is required');
@@ -42,38 +43,43 @@ function saveUser() {
     }
     if ($postUser->pass !== $postUser->cpass) JSONResponse::Error('Password confirmation incorrect');
   
-    $ap = AccessProfile::find(['name'=>$postUser->accessProfile]);
-    if (!$ap) JSONResponse::Error('Invalid access profile');
+    if (!count($postUser->accesses)) JSONResponse::Error('Please choose one user access');
+
+    $strAccesses = "'".implode("','", $postUser->accesses)."'";
+    $checkAccess = Access::allPlus("WHERE name IN ($strAccesses)");
+    if (count($checkAccess) !== count($postUser->accesses)) JSONResponse::Error('Invalid user access. Please refresh the page and try again');
   
     if ($postUser->id === 0) {
+      $postUser->is_active = true;
       $oUser = new User($postUser);
       $oUser->password = User::hashPassword($postUser->pass);
       $oUser->insert(); //Auto generate id, will be put into $oUser->id
   
-      $ua = new UserAccess(['uid'=>$oUser->id, 'profile'=>$postUser->accessProfile]);
-      $ua->insert();
+      foreach ($checkAccess as $acc) {
+        $ua = new UserAccess(['user_fk'=>$oUser->id, 'access_fk'=>$acc->id]);
+        $ua->insert();
+      }
   
       unset($oUser->password, $oUser->jwt);
-      $oUser->accessProfile = $postUser->accessProfile;
+      $oUser->accesses = $postUser->accesses;
       JSONResponse::Success(['u'=>$oUser]);
     } else {
       $oUser = User::find(['id'=>$postUser->id]);
       if (!$oUser) JSONResponse::Error('User not found');
-      $oUser->username = $postUser->username;
+      // $oUser->username = $postUser->username;
       $oUser->email = $postUser->email;
       $oUser->phone = $postUser->phone;
       $oUser->fullname = $postUser->fullname;
       
-      $ua = UserAccess::findWhere('WHERE uid=:UID', '*', ['UID'=>$postUser->id]);
-      if (!$ua) JSONResponse::Error('User Access data not found');
-      $ua->profile = $postUser->accessProfile;
 
-      $updateUser = false;
       try { $oUser->update(); $updateUser = true; } catch (\Exception $ex) {}
-      try { $ua->update(); $updateUser = true; } catch (\Exception $ex) {}
-      if (!$updateUser) JSONResponse::Error('No changes in data');
+      DB::exec('DELETE FROM user_accesses WHERE user_fk=:UFK', ['UFK'=>$postUser->id]);
+      foreach ($checkAccess as $acc) {
+        $ua = new UserAccess(['user_fk'=>$oUser->id, 'access_fk'=>$acc->id]);
+        $ua->insert();
+      }
       unset($oUser->password, $oUser->jwt);
-      $oUser->accessProfile = $postUser->accessProfile;
+      $oUser->accesses = $postUser->accesses;
       JSONResponse::Success(['u'=>$oUser]);
     }
   } catch (\Exception $ex) { JSONResponse::Error($ex->getMessage()); }
